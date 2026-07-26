@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Verity — Style A · Fintech Light</title>
+<style>
+  :root{
+    --bg:#f6f8fb; --surface:#ffffff; --ink:#0f172a; --muted:#64748b; --faint:#94a3b8;
+    --line:#e6eaf0; --line2:#eef1f6; --accent:#2563eb; --accent-soft:#eff4ff;
+    --green:#16a34a; --green-soft:#eafaf0; --amber:#b45309; --amber-soft:#fef6e7;
+    --violet:#7c3aed; --violet-soft:#f3edff; --slate-soft:#f1f5f9;
+    --radius:12px; --shadow:0 1px 2px rgba(15,23,42,.04), 0 8px 24px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--ink);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  .mono{font-family:"SF Mono",ui-monospace,"Cascadia Code",Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+  /* Top bar */
+  .topbar{height:56px;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:20px;padding:0 20px;position:sticky;top:0;z-index:5}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.02em}
+  .logo{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#2563eb,#7c3aed);display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px}
+  .search{flex:1;max-width:420px;display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:7px 11px;color:var(--faint)}
+  .search input{border:0;background:transparent;outline:0;font:inherit;color:var(--ink);width:100%}
+  .topnav{display:flex;gap:4px}
+  .topnav a{padding:7px 12px;border-radius:8px;color:var(--muted);text-decoration:none;font-weight:500}
+  .topnav a.active{background:var(--accent-soft);color:var(--accent)}
+  .role{display:flex;align-items:center;gap:9px;padding:5px 6px 5px 11px;border:1px solid var(--line);border-radius:999px;cursor:pointer}
+  .role .who{font-weight:600;font-size:13px}
+  .role .tag{font-size:11px;color:var(--muted)}
+  .avatar{width:28px;height:28px;border-radius:50%;background:#dbe4f3;color:#33507e;display:grid;place-items:center;font-weight:700;font-size:12px}
+  /* Breadcrumb strip */
+  .crumbs{background:var(--surface);border-bottom:1px solid var(--line);padding:10px 20px;display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px}
+  .crumbs a{color:var(--muted);text-decoration:none}
+  .crumbs b{color:var(--ink)}
+  .sep{color:var(--faint)}
+  /* Layout */
+  .wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:0;height:calc(100vh - 56px - 41px)}
+  .pane{overflow:auto}
+  .pane.left{border-right:1px solid var(--line);background:var(--surface)}
+  .pane-head{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--line2);padding:16px 22px;z-index:2}
+  .pane-head.right{background:#fbfcfe}
+  .eyebrow{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:700}
+  h1{font-size:18px;margin:4px 0 2px;letter-spacing:-.01em}
+  .subhead{color:var(--muted);font-size:13px}
+  /* Return form */
+  .form{padding:14px 14px 40px}
+  .group-label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);font-weight:700;padding:16px 10px 8px}
+  .line{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:10px;padding:11px 10px;border-radius:10px;cursor:pointer;border:1px solid transparent}
+  .line:hover{background:var(--slate-soft)}
+  .line.sel{background:var(--accent-soft);border-color:#d5e2ff}
+  .line .num{font-size:12px;color:var(--faint)}
+  .line .label{font-weight:500}
+  .line .desc{font-size:12px;color:var(--muted)}
+  .val{display:flex;align-items:center;gap:9px;justify-content:flex-end}
+  .amount{font-weight:600;font-size:14px}
+  /* state badges */
+  .badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+  .dot{width:6px;height:6px;border-radius:50%}
+  .b-ai{background:var(--violet-soft);color:var(--violet)} .b-ai .dot{background:var(--violet)}
+  .b-verified{background:var(--green-soft);color:var(--green)} .b-verified .dot{background:var(--green)}
+  .b-review{background:var(--amber-soft);color:var(--amber)} .b-review .dot{background:var(--amber)}
+  .b-locked{background:var(--slate-soft);color:var(--muted)} .b-locked .dot{background:var(--faint)}
+  .conf{font-size:11px;color:var(--muted)} .conf b{color:var(--ink)}
+  /* Right / source */
+  .trace-head{padding:16px 22px;border-bottom:1px solid var(--line2);background:#fbfcfe}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+  .flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .flow .arrow{color:var(--faint)}
+  .doc{margin:18px 22px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+  .doc-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line2);background:#fcfdff}
+  .doc-title{font-weight:600;font-size:13px}
+  .doc-meta{font-size:12px;color:var(--muted)}
+  .paper{padding:20px;background:repeating-linear-gradient(#fff,#fff 27px,#f3f6fb 28px);position:relative;min-height:260px}
+  .w2row{display:flex;justify-content:space-between;font-size:12px;color:#334155;padding:6px 0}
+  .w2row .k{color:var(--muted)}
+  .hl{background:rgba(37,99,235,.13);outline:2px solid var(--accent);border-radius:6px;padding:6px 8px;margin:2px -8px}
+  .callout{position:absolute;right:16px;top:96px;background:var(--accent);color:#fff;font-size:11px;font-weight:600;padding:5px 9px;border-radius:8px;box-shadow:var(--shadow)}
+  .callout:after{content:"";position:absolute;left:-6px;top:12px;border:6px solid transparent;border-right-color:var(--accent)}
+  /* AI card */
+  .ai{margin:0 22px 26px;border:1px solid #e3d9fb;background:linear-gradient(180deg,#faf7ff,#fff);border-radius:12px;padding:14px 16px}
+  .ai-head{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--violet)}
+  .ai p{margin:8px 0 0;color:#3f3557;font-size:13px}
+  .evidence{margin-top:10px;font-size:12px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+  .btns{display:flex;gap:8px;margin-top:12px}
+  .btn{border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:7px 12px;font-weight:600;font-size:13px;cursor:pointer;color:var(--ink)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.ghost{background:transparent}
+  .stylebar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);background:#0f172a;color:#fff;padding:8px 16px;border-radius:999px;font-size:12px;box-shadow:var(--shadow);z-index:10}
+  .stylebar b{color:#c7d7ff}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><div class="logo">V</div>Verity</div>
+    <nav class="topnav">
+      <a href="#">Dashboard</a>
+      <a href="#" class="active">Returns</a>
+      <a href="#">Documents</a>
+      <a href="#">Messages</a>
+    </nav>
+    <div class="search"><span>⌕</span><input placeholder="Search returns, documents, clients…" /></div>
+    <div class="role">
+      <div class="avatar">DM</div>
+      <div><div class="who">Dana Morales</div><div class="tag">Preparer · switch role ▾</div></div>
+    </div>
+  </div>
+
+  <div class="crumbs">
+    <a href="#">Returns</a><span class="sep">/</span>
+    <a href="#">Rivera Household · 2025</a><span class="sep">/</span>
+    <a href="#">Form 1040</a><span class="sep">/</span>
+    <b>Line 1a — Wages</b>
+  </div>
+
+  <div class="wrap">
+    <!-- LEFT: return -->
+    <section class="pane left">
+      <div class="pane-head">
+        <div class="eyebrow">Return Review</div>
+        <h1>Form 1040 — Rivera Household</h1>
+        <div class="subhead">Tax year 2025 · 18 of 24 fields verified · <span style="color:var(--amber)">3 need review</span></div>
+      </div>
+      <div class="form">
+        <div class="group-label">Income</div>
+
+        <div class="line sel">
+          <div class="num mono">1a</div>
+          <div><div class="label">Wages, salaries, tips</div><div class="desc">From Form W-2, box 1</div></div>
+          <div class="val">
+            <span class="badge b-ai"><span class="dot"></span>AI extracted</span>
+            <span class="amount mono">$92,400</span>
+          </div>
+        </div>
+
+        <div class="line">
+          <div class="num mono">2b</div>
+          <div><div class="label">Taxable interest</div><div class="desc">From Form 1099-INT</div></div>
+          <div class="val"><span class="badge b-verified"><span class="dot"></span>Verified</span><span class="amount mono">$1,204</span></div>
+        </div>
+
+        <div class="line">
+          <div class="num mono">3a</div>
+          <div><div class="label">Qualified dividends</div><div class="desc">From Form 1099-DIV</div></div>
+          <div class="val"><span class="badge b-review"><span class="dot"></span>Needs review</span><span class="amount mono">$3,980</span></div>
+        </div>
+
+        <div class="line">
+          <div class="num mono">7</div>
+          <div><div class="label">Capital gain / loss</div><div class="desc">From Schedule D</div></div>
+          <div class="val"><span class="badge b-review"><span class="dot"></span>Needs review</span><span class="amount mono">$6,110</span></div>
+        </div>
+
+        <div class="group-label">Calculated</div>
+        <div class="line">
+          <div class="num mono">9</div>
+          <div><div class="label">Total income</div><div class="desc">Sum of lines 1–8</div></div>
+          <div class="val"><span class="badge b-locked"><span class="dot"></span>Locked · formula</span><span class="amount mono">$103,694</span></div>
+        </div>
+        <div class="line">
+          <div class="num mono">11</div>
+          <div><div class="label">Adjusted gross income</div><div class="desc">Line 9 − adjustments</div></div>
+          <div class="val"><span class="badge b-locked"><span class="dot"></span>Locked · formula</span><span class="amount mono">$100,494</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: source + trace -->
+    <section class="pane">
+      <div class="trace-head">
+        <div class="eyebrow">Traceability · Line 1a</div>
+        <div class="flow">
+          <span class="chip">📄 W-2 · Acme Corp</span>
+          <span class="arrow">→</span>
+          <span class="chip">Box 1 · page 1</span>
+          <span class="arrow">→</span>
+          <span class="chip">no transformation</span>
+          <span class="arrow">→</span>
+          <span class="chip" style="border-color:#cfe0ff;color:var(--accent)">Line 1a · $92,400</span>
+        </div>
+      </div>
+
+      <div class="doc">
+        <div class="doc-bar">
+          <div class="doc-title">W-2 — Acme Corporation (2025)</div>
+          <div class="doc-meta">Page 1 of 1 · uploaded Feb 3</div>
+        </div>
+        <div class="paper">
+          <div class="callout">Box 1 · matched</div>
+          <div class="w2row"><span class="k">Employer</span><span>Acme Corporation</span></div>
+          <div class="w2row"><span class="k">Employee</span><span>Rivera, J.</span></div>
+          <div class="hl"><div class="w2row" style="padding:0"><span class="k">Box 1 — Wages, tips, other comp.</span><span class="mono" style="font-weight:600">92,400.00</span></div></div>
+          <div class="w2row"><span class="k">Box 2 — Federal income tax withheld</span><span class="mono">14,880.00</span></div>
+          <div class="w2row"><span class="k">Box 3 — Social security wages</span><span class="mono">96,000.00</span></div>
+          <div class="w2row"><span class="k">Box 5 — Medicare wages</span><span class="mono">96,000.00</span></div>
+        </div>
+      </div>
+
+      <div class="ai">
+        <div class="ai-head">✦ Verity AI</div>
+        <p>Extracted <b>$92,400</b> from Box 1 of the Acme Corp W-2. This exactly matches the amount on last year's return adjusted for a 5% raise, so confidence is high.</p>
+        <div class="evidence">
+          <span class="conf">Confidence <b>96%</b></span>·
+          <span>Source: W-2 Box 1</span>·
+          <span>Cross-check: prior year + payroll cadence</span>
+        </div>
+        <div class="btns">
+          <button class="btn primary">✓ Accept &amp; verify</button>
+          <button class="btn">Edit value</button>
+          <button class="btn ghost">Flag for reviewer</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="stylebar">Style <b>A</b> — Clean fintech / light · same screen as B &amp; C</div>
+</body>
+</html>

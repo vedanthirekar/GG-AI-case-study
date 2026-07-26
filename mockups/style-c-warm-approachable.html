@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Verity — Style C · Warm Approachable</title>
+<style>
+  :root{
+    --bg:#f7f4ee; --surface:#ffffff; --ink:#26221d; --muted:#7a7268; --faint:#a79f93;
+    --line:#ece6db; --line2:#f2ede3; --accent:#0e9f6e; --accent-deep:#0b8a5f; --accent-soft:#e6f6ef;
+    --blue:#3b7dd8; --blue-soft:#eaf1fc; --amber:#c2760a; --amber-soft:#fbf0dd;
+    --violet:#7b5cd6; --violet-soft:#f0ebfb; --sand:#f4efe6;
+    --radius:16px; --shadow:0 2px 4px rgba(60,50,35,.05), 0 12px 30px rgba(60,50,35,.08);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--ink);font:15px/1.55 "Georgia","Iowan Old Style",serif;-webkit-font-smoothing:antialiased}
+  .ui{font-family:"Nunito","Segoe UI",-apple-system,BlinkMacSystemFont,sans-serif}
+  .mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+  body,.topnav,.role,.badge,.btn,.chip,.eyebrow,.subhead,.desc,.group-label,.doc-meta,.crumbs{font-family:"Nunito","Segoe UI",-apple-system,sans-serif}
+  .topbar{height:62px;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:20px;padding:0 24px;position:sticky;top:0;z-index:5}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:-.01em;font-family:"Nunito",sans-serif}
+  .logo{width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,#0e9f6e,#3b7dd8);display:grid;place-items:center;color:#fff;font-weight:900;font-size:16px}
+  .search{flex:1;max-width:420px;display:flex;align-items:center;gap:9px;background:var(--sand);border:1.5px solid var(--line);border-radius:14px;padding:9px 14px;color:var(--faint)}
+  .search input{border:0;background:transparent;outline:0;font:inherit;color:var(--ink);width:100%}
+  .topnav{display:flex;gap:4px}
+  .topnav a{padding:9px 14px;border-radius:11px;color:var(--muted);text-decoration:none;font-weight:700;font-size:14px}
+  .topnav a.active{background:var(--accent-soft);color:var(--accent-deep)}
+  .role{display:flex;align-items:center;gap:10px;padding:6px 8px 6px 12px;border:1.5px solid var(--line);border-radius:999px;cursor:pointer}
+  .avatar{width:32px;height:32px;border-radius:50%;background:#d9efe4;color:#0b8a5f;display:grid;place-items:center;font-weight:800;font-size:13px}
+  .role .who{font-weight:800;font-size:14px} .role .tag{font-size:12px;color:var(--muted)}
+  .crumbs{background:var(--surface);border-bottom:1px solid var(--line);padding:12px 24px;display:flex;align-items:center;gap:9px;color:var(--muted);font-size:14px;font-weight:600}
+  .crumbs a{color:var(--muted);text-decoration:none} .crumbs b{color:var(--ink)} .sep{color:var(--faint)}
+  .wrap{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 62px - 47px)}
+  .pane{overflow:auto;padding:8px} .pane.left{background:transparent}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);margin:14px;overflow:hidden}
+  .pane-head{padding:20px 22px 14px}
+  .eyebrow{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-deep);font-weight:800}
+  h1{font-size:22px;margin:6px 0 4px;font-family:"Nunito",sans-serif;font-weight:800;letter-spacing:-.01em}
+  .subhead{color:var(--muted);font-size:14px;font-weight:600}
+  .form{padding:6px 12px 16px}
+  .group-label{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);font-weight:800;padding:14px 12px 6px}
+  .line{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding:14px;border-radius:14px;cursor:pointer;border:1.5px solid transparent}
+  .line:hover{background:var(--sand)}
+  .line.sel{background:var(--accent-soft);border-color:#bfe6d4}
+  .lname{display:flex;align-items:baseline;gap:9px}
+  .num{font-size:12px;color:var(--faint)} .label{font-weight:800;font-size:15px;font-family:"Nunito",sans-serif}
+  .desc{font-size:13px;color:var(--muted);margin-top:2px;font-weight:600}
+  .val{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+  .amount{font-weight:800;font-size:16px}
+  .badge{font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+  .dot{width:7px;height:7px;border-radius:50%}
+  .b-ai{background:var(--violet-soft);color:var(--violet)} .b-ai .dot{background:var(--violet)}
+  .b-verified{background:var(--accent-soft);color:var(--accent-deep)} .b-verified .dot{background:var(--accent)}
+  .b-review{background:var(--amber-soft);color:var(--amber)} .b-review .dot{background:var(--amber)}
+  .b-locked{background:var(--sand);color:var(--muted)} .b-locked .dot{background:var(--faint)}
+  .trace-head{padding:20px 22px 6px}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--muted);background:var(--sand);border:1.5px solid var(--line);border-radius:999px;padding:6px 12px;font-weight:700}
+  .flow{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:12px} .flow .arrow{color:var(--faint);font-weight:700}
+  .doc-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line2)}
+  .doc-title{font-weight:800;font-size:15px;font-family:"Nunito",sans-serif} .doc-meta{font-size:13px;color:var(--muted);font-weight:600}
+  .paper{padding:22px;background:#fffdf8;position:relative;min-height:250px}
+  .w2row{display:flex;justify-content:space-between;font-size:14px;color:#4a443c;padding:7px 0}
+  .w2row .k{color:var(--muted)}
+  .hl{background:rgba(14,159,110,.12);outline:2.5px solid var(--accent);border-radius:10px;padding:8px 10px;margin:3px -10px}
+  .callout{position:absolute;right:18px;top:100px;background:var(--accent);color:#fff;font-size:12px;font-weight:800;padding:6px 11px;border-radius:999px;box-shadow:var(--shadow);font-family:"Nunito",sans-serif}
+  .callout:after{content:"";position:absolute;left:-6px;top:12px;border:6px solid transparent;border-right-color:var(--accent)}
+  .ai{margin:14px;border:1.5px solid #e0d6f5;background:linear-gradient(180deg,#faf7ff,#fff);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
+  .ai-head{display:flex;align-items:center;gap:9px;font-weight:800;color:var(--violet);font-family:"Nunito",sans-serif;font-size:15px}
+  .ai p{margin:10px 0 0;color:#4a4258;font-size:14px}
+  .evidence{margin-top:12px;font-size:13px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;font-weight:600}
+  .evidence b{color:var(--ink)}
+  .btns{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .btn{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 16px;font-weight:800;font-size:14px;cursor:pointer;color:var(--ink);font-family:"Nunito",sans-serif}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+  .stylebar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#26221d;color:#f7f4ee;padding:9px 18px;border-radius:999px;font-size:13px;font-weight:700;box-shadow:var(--shadow);z-index:10;font-family:"Nunito",sans-serif}
+  .stylebar b{color:#8fe3c0}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><div class="logo">V</div>Verity</div>
+    <nav class="topnav">
+      <a href="#">Dashboard</a><a href="#" class="active">Returns</a><a href="#">Documents</a><a href="#">Messages</a>
+    </nav>
+    <div class="search"><span>⌕</span><input placeholder="Search returns, documents, clients…" /></div>
+    <div class="role"><div class="avatar">DM</div><div><div class="who">Dana Morales</div><div class="tag">Preparer · switch role ▾</div></div></div>
+  </div>
+
+  <div class="crumbs">
+    <a href="#">Returns</a><span class="sep">→</span>
+    <a href="#">Rivera Household · 2025</a><span class="sep">→</span>
+    <a href="#">Form 1040</a><span class="sep">→</span><b>Line 1a — Wages</b>
+  </div>
+
+  <div class="wrap">
+    <section class="pane left">
+      <div class="card">
+        <div class="pane-head">
+          <div class="eyebrow">Return Review</div>
+          <h1>Form 1040 — Rivera Household</h1>
+          <div class="subhead">Tax year 2025 · 18 of 24 fields verified · <span style="color:var(--amber)">3 need a look</span></div>
+        </div>
+        <div class="form">
+          <div class="group-label">Income</div>
+          <div class="line sel">
+            <div><div class="lname"><span class="num mono">1a</span><span class="label">Wages, salaries, tips</span></div><div class="desc">From your W-2, box 1</div></div>
+            <div class="val"><span class="badge b-ai"><span class="dot"></span>AI found this</span><span class="amount mono">$92,400</span></div>
+          </div>
+          <div class="line">
+            <div><div class="lname"><span class="num mono">2b</span><span class="label">Taxable interest</span></div><div class="desc">From Form 1099-INT</div></div>
+            <div class="val"><span class="badge b-verified"><span class="dot"></span>Verified</span><span class="amount mono">$1,204</span></div>
+          </div>
+          <div class="line">
+            <div><div class="lname"><span class="num mono">3a</span><span class="label">Qualified dividends</span></div><div class="desc">From Form 1099-DIV</div></div>
+            <div class="val"><span class="badge b-review"><span class="dot"></span>Needs a look</span><span class="amount mono">$3,980</span></div>
+          </div>
+          <div class="line">
+            <div><div class="lname"><span class="num mono">7</span><span class="label">Capital gain / loss</span></div><div class="desc">From Schedule D</div></div>
+            <div class="val"><span class="badge b-review"><span class="dot"></span>Needs a look</span><span class="amount mono">$6,110</span></div>
+          </div>
+          <div class="group-label">Calculated for you</div>
+          <div class="line">
+            <div><div class="lname"><span class="num mono">9</span><span class="label">Total income</span></div><div class="desc">We add up lines 1–8</div></div>
+            <div class="val"><span class="badge b-locked"><span class="dot"></span>Auto · locked</span><span class="amount mono">$103,694</span></div>
+          </div>
+          <div class="line">
+            <div><div class="lname"><span class="num mono">11</span><span class="label">Adjusted gross income</span></div><div class="desc">Line 9 minus adjustments</div></div>
+            <div class="val"><span class="badge b-locked"><span class="dot"></span>Auto · locked</span><span class="amount mono">$100,494</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pane">
+      <div class="card">
+        <div class="trace-head">
+          <div class="eyebrow">Where this number came from · Line 1a</div>
+          <div class="flow">
+            <span class="chip">📄 W-2 · Acme Corp</span><span class="arrow">→</span>
+            <span class="chip">Box 1 · page 1</span><span class="arrow">→</span>
+            <span class="chip">copied as-is</span><span class="arrow">→</span>
+            <span class="chip" style="border-color:#bfe6d4;color:var(--accent-deep)">Line 1a · $92,400</span>
+          </div>
+        </div>
+        <div class="doc-bar"><div class="doc-title">W-2 — Acme Corporation (2025)</div><div class="doc-meta">Page 1 of 1 · uploaded Feb 3</div></div>
+        <div class="paper">
+          <div class="callout">Box 1 · matched</div>
+          <div class="w2row"><span class="k">Employer</span><span>Acme Corporation</span></div>
+          <div class="w2row"><span class="k">Employee</span><span>Rivera, J.</span></div>
+          <div class="hl"><div class="w2row" style="padding:0"><span class="k" style="font-weight:700;color:var(--ink)">Box 1 — Wages, tips, other comp.</span><span class="mono" style="font-weight:800">92,400.00</span></div></div>
+          <div class="w2row"><span class="k">Box 2 — Federal income tax withheld</span><span class="mono">14,880.00</span></div>
+          <div class="w2row"><span class="k">Box 3 — Social security wages</span><span class="mono">96,000.00</span></div>
+          <div class="w2row"><span class="k">Box 5 — Medicare wages</span><span class="mono">96,000.00</span></div>
+        </div>
+      </div>
+
+      <div class="ai">
+        <div class="ai-head">✦ Verity AI</div>
+        <p>I found <b>$92,400</b> in Box 1 of your Acme Corp W-2. That's your last year's wages plus about a 5% raise, so I'm confident it's right.</p>
+        <div class="evidence"><span>Confidence <b>96%</b></span>·<span>Source: W-2 Box 1</span>·<span>Checked against last year</span></div>
+        <div class="btns">
+          <button class="btn primary">✓ Looks right — verify</button>
+          <button class="btn">Edit the value</button>
+          <button class="btn ghost">Ask my CPA</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="stylebar">Style <b>C</b> — Warm &amp; approachable · same screen as A &amp; B</div>
+</body>
+</html>
