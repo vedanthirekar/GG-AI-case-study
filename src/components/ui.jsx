@@ -39,13 +39,15 @@ export function Avatar({ user, size = 28, ring = false }) {
   )
 }
 
+// Print marks, not filled chips: a hairline outline in the tone's own ink. The
+// status dot keeps carrying the colour, so meaning survives at a glance.
 const TONES = {
-  good: 'bg-good-soft text-good', warn: 'bg-warn-soft text-warn', danger: 'bg-danger-soft text-danger',
-  accent: 'bg-accent-soft text-accent', ai: 'bg-ai-soft text-ai', muted: 'bg-slateSoft text-muted',
+  good: 'border-good/45 text-good', warn: 'border-warn/50 text-warn', danger: 'border-danger/45 text-danger',
+  accent: 'border-accent/40 text-accent', ai: 'border-ai/40 text-ai', muted: 'border-line text-muted',
 }
 export function Tag({ tone = 'muted', children, className = '', dot = false }) {
   return (
-    <span className={cx('inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2 py-0.5 text-micro font-semibold', TONES[tone] || TONES.muted, className)}>
+    <span className={cx('inline-flex items-center gap-1.5 whitespace-nowrap rounded-sm border bg-transparent px-1.5 py-0.5 text-micro font-semibold', TONES[tone] || TONES.muted, className)}>
       {dot && <span className="h-1.5 w-1.5 rounded-full bg-current opacity-80" />}
       {children}
     </span>
@@ -53,10 +55,11 @@ export function Tag({ tone = 'muted', children, className = '', dot = false }) {
 }
 
 export function Card({ children, className = '', hover = false, accent, ...rest }) {
+  // No lift on hover — nothing floats in this direction. The rule darkens instead.
   return (
-    <div className={cx('relative rounded-xl2 border border-line bg-surface shadow-e2',
-      hover && 'transition hover:-translate-y-0.5 hover:shadow-e3', className)} {...rest}>
-      {accent && <span className="absolute inset-x-0 top-0 h-0.5 rounded-t-xl2" style={{ background: accent }} />}
+    <div className={cx('relative rounded-xl2 border border-line bg-surface',
+      hover && 'transition-colors hover:border-accent/50', className)} {...rest}>
+      {accent && <span className="absolute inset-x-0 top-0 h-0.5" style={{ background: accent }} />}
       {children}
     </div>
   )

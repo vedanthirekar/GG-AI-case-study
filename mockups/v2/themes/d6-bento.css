@@ -1,0 +1,74 @@
+/* D6 · BENTO — Bento Box Grid (complexity Low, Performance Excellent)
+   The most incremental of the six: keeps the existing indigo as the single
+   accent and changes composition rather than palette. Unequal tiles let ten
+   capabilities read as one product at a glance — which is how a case-study
+   reviewer will actually skim the deliverable. The source document becomes the
+   hero tile of the review screen. */
+:root {
+  --bg: #EDEEF2; --surface: #FFFFFF; --surface2: #F5F6F9;
+  --ink: #0B1220; --muted: #5B6472; --faint: #98A1B1;
+  --line: #E4E7EE; --line2: #EDEFF4;
+
+  --accent: #4F46E5; --accent-fg: #FFFFFF; --accent-deep: #4338CA; --accent-soft: #EEEEFF;
+  --good: #059669; --good-soft: #E6F7F0;
+  --warn: #D97706; --warn-deep: #B45309; --warn-soft: #FDF2E3;
+  --ai: #7C3AED; --ai-soft: #F4EDFF;
+  --danger: #E11D48; --danger-soft: #FDEAEF;
+
+  --paper: #FFFFFF; --paper-rule: #EEF1F6; --paper-ink: #0B1220;
+
+  --f-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --f-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --f-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --w-head: 700; --track: -0.025em;
+  --fs-display: 24px; --fs-title: 15px;
+
+  --r-sm: 10px; --r: 18px; --r-lg: 24px;
+  --row-h: 42px; --pad: 18px; --gap: 14px;
+  --sh1: 0 1px 2px rgb(11 18 32 / .04);
+  --sh2: 0 2px 6px rgb(11 18 32 / .05), 0 14px 34px rgb(11 18 32 / .07);
+  --card-sh: 0 1px 2px rgb(11 18 32 / .04), 0 8px 22px rgb(11 18 32 / .05);
+}
+
+/* ---- review: three tiles, document as the hero ------------------------- */
+.split {
+  grid-template-columns: .95fr 1.2fr;
+  grid-template-rows: 1.1fr .9fr;
+  grid-template-areas: "lines doc" "trace doc";
+}
+.pane-lines { grid-area: lines; }
+.pane-doc   { grid-area: doc; }
+.pane-trace { grid-area: trace; }
+.pane-doc { background: linear-gradient(165deg, #F7F5FF 0%, var(--surface) 42%); }
+
+/* ---- dashboard: unequal tiles rather than an even strip ---------------- */
+.screen-dash { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: min-content; align-content: start; }
+.dash-head, .stats, .queue { grid-column: 1 / -1; }
+.stats { grid-template-columns: 1.5fr 1fr 1.35fr 1fr; }
+.stat { border-radius: var(--r); padding: 16px var(--pad); position: relative; overflow: hidden; }
+.stat:nth-child(1) { background: linear-gradient(150deg, #EEEEFF 0%, var(--surface) 58%); }
+.stat:nth-child(2) { background: linear-gradient(150deg, #FDF2E3 0%, var(--surface) 58%); }
+.stat:nth-child(3) { background: linear-gradient(150deg, #F4EDFF 0%, var(--surface) 58%); }
+.stat:nth-child(4) { background: linear-gradient(150deg, #E6F7F0 0%, var(--surface) 58%); }
+.stat-v { font-size: 30px; }
+.stat:nth-child(1) .stat-v { color: var(--accent-deep); }
+.stat:nth-child(2) .stat-v { color: var(--warn-deep); }
+.stat:nth-child(3) .stat-v { color: var(--ai); }
+.stat:nth-child(4) .stat-v { color: var(--good); }
+
+/* soft, rounded, generous — the tile is the unit of meaning */
+.pane-head { padding: 13px var(--pad) 11px; }
+.badge { padding: 2px 9px; font-weight: 700; }
+.nav-item { border-radius: 10px; padding: 8px 11px; }
+.btn { border-radius: 10px; padding: 7px 14px; }
+.tour-btn, .search { border-radius: 10px; }
+.ai { border-radius: var(--r); background: linear-gradient(160deg, #F7F1FF 0%, #FBF9FF 60%); }
+.cand { border-radius: 12px; }
+.paper { border-radius: 12px; }
+.queue { border-radius: var(--r); }
+.blocked { border-radius: 12px; }
+.line.is-sel {
+  background: linear-gradient(90deg, var(--accent-soft) 0%, var(--accent-soft) 50%, transparent 100%);
+  background-size: 200% 100%;
+  box-shadow: inset 3px 0 0 var(--accent);
+}

@@ -11,6 +11,7 @@ import { useChrome } from '../../context/ChromeContext'
 import { useTheme } from '../../context/ThemeContext'
 import { useTour } from '../../features/tour/TourContext'
 import { Icon, Tooltip, cx } from '../ui'
+import { ROLES } from '../../data/catalog'
 import Sidebar from './Sidebar'
 import GlobalSearch from './GlobalSearch'
 import RelatedObjectsPanel from './RelatedObjectsPanel'
@@ -20,9 +21,9 @@ import TourOverlay from '../../features/tour/TourOverlay'
 
 export default function AppShell() {
   const { crumbs, related } = useChrome()
-  const { history, recordVisit } = useSession()
+  const { history, recordVisit, activeRole } = useSession()
   const { isDark, toggle } = useTheme()
-  const { start } = useTour()
+  const { start, total: tourSteps } = useTour()
   const loc = useLocation()
   const navigate = useNavigate()
   const [collapsed, setCollapsed] = useState(false)
@@ -72,10 +73,15 @@ export default function AppShell() {
 
           <div className="ml-auto flex items-center gap-1">
             <GlobalSearch />
-            <button onClick={start} data-tour="tour-btn"
-              className="hidden items-center gap-1.5 rounded-lg border border-accent/30 bg-accent-soft px-2.5 py-1.5 text-meta font-semibold text-accent transition hover:bg-accent-fill hover:text-white sm:flex">
-              <Icon name="route" size={14} /> Take a tour
-            </button>
+            {/* the tour is assembled for the signed-in role, so say so */}
+            {tourSteps > 0 && (
+              <Tooltip label={`A ${tourSteps}-step tour of your work as ${ROLES[activeRole]?.label.toLowerCase()}`} side="bottom-end">
+                <button onClick={start} data-tour="tour-btn"
+                  className="hidden items-center gap-1.5 rounded-lg border border-accent/30 bg-accent-soft px-2.5 py-1.5 text-meta font-semibold text-accent transition hover:bg-accent-fill hover:text-white sm:flex">
+                  <Icon name="route" size={14} /> Show me around
+                </button>
+              </Tooltip>
+            )}
             <NotificationBell />
             <Tooltip label="Help for this screen  ·  ?" side="bottom-end">
               <button onClick={() => setHelpOpen(true)} data-tour="help-btn"

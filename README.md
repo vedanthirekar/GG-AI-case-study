@@ -52,9 +52,12 @@ a dashboard.
 
 ## Start with the tour
 
-Click **Take a tour** in the top bar. Fourteen steps drive the real application —
-switching accounts, navigating, and spotlighting the relevant UI as they go. It doubles
-as a script for a walkthrough video. (`→`/`←` to move, `Esc` to exit.)
+Click **Show me around** in the top bar. The tour is assembled for whoever is signed in:
+a taxpayer gets seven steps about their own return, an admin gets five about running the
+practice, a preparer gets the review workflow. It never switches account — it runs as
+*you*, navigating the real application and spotlighting the relevant UI, and every path
+resolves against your own work. Sign in as two different people to see two different
+tours. (`→`/`←` to move, `Esc` to exit.)
 
 ---
 
@@ -112,7 +115,8 @@ bar toggles **dark mode**.
   from IDs; powers the Related rail and cross-object navigation.
 - **Search, filtering, faceting and progressive disclosure** over the full generated set.
 - **The status state machine**, breadcrumbs, deep links, and the affordance system.
-- **The tour engine** — drives real navigation, account switching and spotlighting.
+- **The tour engine** — one pool of steps filtered by role and by live conditions, driving
+  real navigation and spotlighting against the signed-in user's own records.
 
 **Simulated — fabricated but plausible, by design:**
 
@@ -162,6 +166,20 @@ bar toggles **dark mode**.
 7. **Deep-linkable state.** Selection lives in the URL — including the review layout — so
    you can land mid-context, and the breadcrumb plus Related rail reconstruct where you
    are. Sign-in preserves it too.
+8. **The visual language is an argument, not a default.** A tax return is a printed
+   instrument, so the interface is built like one: a serif (Newsreader) for headings over
+   a humanist sans (IBM Plex Sans), tabular mono (IBM Plex Mono) for every figure, hairline
+   rules instead of drop shadows, near-square corners, and status shown as a ruled print
+   mark rather than a filled pill. Colour is deliberately scarce — warm stock, ink, and a
+   single blue, with each semantic tone chosen as a printer's ink rather than a screen
+   colour. This direction ("Ledger") was picked against five alternatives, all of which
+   are still browsable at `mockups/v2/index.html`; the runners-up were a dark data-dense
+   terminal, a navy-and-gold institutional treatment, a calm taxpayer-first layout,
+   glassmorphism, and a bento grid.
+
+Everything visual resolves from the token block in `src/index.css` plus the scales in
+`tailwind.config.js` — the font stack, radii, elevation ramp and every colour. Re-theming
+the product means editing those two files, not the feature code.
 
 ---
 

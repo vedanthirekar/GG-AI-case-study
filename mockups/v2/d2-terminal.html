@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Verity — D2 · Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="base.css"/>
+<link rel="stylesheet" href="themes/d2-terminal.css"/>
+</head>
+<body>
+  <div class="hud">
+    <span class="hud-name">D2 · Terminal</span>
+    <span class="hud-desc">Data-Dense Dashboard, dark-first · 30px rows, mono figures, keyboard-first — built for sixty returns a week</span>
+    <div class="toggle">
+      <button data-screen="review">Return review</button>
+      <button data-screen="dash">Dashboard</button>
+    </div>
+  </div>
+  <div id="app"></div>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="data.js"></script>
+  <script src="shared.js"></script>
+</body>
+</html>

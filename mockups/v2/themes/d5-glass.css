@@ -1,0 +1,76 @@
+/* D5 · GLASS — Glassmorphism
+   This is literally what ui-ux-pro-max returned for "tax preparation accounting
+   SaaS multi-role financial review trust". Depth by z-layering and backdrop
+   blur instead of borders; the source document floats *over* the return rather
+   than sitting beside it.
+   Caveat carried from the same database record: Performance ⚠, and
+   "Accessibility ⚠ ensure 4.5:1" — backdrop-filter over a dense table is the
+   most expensive and the most contrast-fragile option of the six. */
+:root {
+  --bg: #EEF3FB; --surface: rgba(255, 255, 255, .72); --surface2: rgba(255, 255, 255, .48);
+  --ink: #0F1B33; --muted: #4B5A75; --faint: #8695AD;
+  --line: rgba(255, 255, 255, .65); --line2: rgba(148, 163, 184, .22);
+
+  --accent: #2563EB; --accent-fg: #FFFFFF; --accent-deep: #1D4ED8; --accent-soft: rgba(37, 99, 235, .12);
+  --good: #059669; --good-soft: rgba(5, 150, 105, .13);
+  --warn: #C2410C; --warn-deep: #9A3412; --warn-soft: rgba(234, 88, 12, .13);
+  --ai: #7C3AED; --ai-soft: rgba(124, 58, 237, .12);
+  --danger: #DC2626; --danger-soft: rgba(220, 38, 38, .13);
+
+  --paper: rgba(255, 255, 255, .92); --paper-rule: rgba(148, 163, 184, .3); --paper-ink: #0F1B33;
+
+  --f-display: 'IBM Plex Sans', system-ui, sans-serif;
+  --f-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --f-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --w-head: 600; --track: -0.015em;
+  --fs-display: 23px; --fs-title: 15.5px;
+
+  --r-sm: 9px; --r: 15px; --r-lg: 20px;
+  --row-h: 42px; --pad: 18px; --gap: 14px;
+  --sh1: 0 2px 10px rgb(15 27 51 / .06);
+  --sh2: 0 8px 28px rgb(15 27 51 / .12);
+  --card-sh: 0 4px 20px rgb(15 27 51 / .07), inset 0 1px 0 rgba(255,255,255,.7);
+}
+
+/* the light source everything refracts */
+body {
+  background:
+    radial-gradient(900px 520px at 12% -8%, rgba(37, 99, 235, .22), transparent 62%),
+    radial-gradient(760px 460px at 92% 8%, rgba(234, 88, 12, .16), transparent 58%),
+    radial-gradient(820px 600px at 60% 108%, rgba(124, 58, 237, .18), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+.rail, .topbar, .hud { backdrop-filter: saturate(1.6) blur(18px); background: rgba(255,255,255,.6); }
+.rail { border-right: 1px solid rgba(255,255,255,.5); }
+.pane, .stat, .queue, .ai, .cand, .search, .toggle {
+  backdrop-filter: saturate(1.5) blur(14px);
+  border: 1px solid rgba(255,255,255,.6);
+}
+.pane, .stat, .queue { box-shadow: var(--card-sh); }
+
+/* the document floats over the return instead of sitting beside it */
+.split { grid-template-columns: 1.15fr 1.2fr .9fr; }
+.pane-doc {
+  z-index: 3; transform: translateY(-8px); margin-left: -26px;
+  box-shadow: 0 18px 48px rgb(15 27 51 / .20), inset 0 1px 0 rgba(255,255,255,.8);
+  background: rgba(255,255,255,.82);
+}
+.pane-trace { margin-left: -8px; }
+.pane-lines { z-index: 1; }
+
+.line:hover { background: rgba(255,255,255,.55); }
+.line.is-sel {
+  background: linear-gradient(90deg, rgba(37,99,235,.16) 0%, rgba(37,99,235,.16) 50%, transparent 100%);
+  background-size: 200% 100%;
+  box-shadow: inset 3px 0 0 var(--accent), 0 2px 12px rgb(37 99 235 / .12);
+}
+.badge { backdrop-filter: blur(6px); border-color: rgba(255,255,255,.55); }
+.btn-primary { box-shadow: 0 4px 16px rgb(37 99 235 / .34); }
+
+/* orange is the single call-to-action colour, per the database palette */
+.tour-btn { background: rgba(234, 88, 12, .14); color: #9A3412; }
+.stat-v { background: linear-gradient(135deg, #2563EB, #7C3AED); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.paper { box-shadow: 0 6px 22px rgb(15 27 51 / .10); }
+.queue-head { background: rgba(255,255,255,.4); }
+.stage-pill { background: rgba(255,255,255,.6); }

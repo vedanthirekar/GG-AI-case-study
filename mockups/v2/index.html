@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Verity — six visual directions</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#0B1220;color:#E2E8F0;
+    font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif}
+  header{padding:22px 26px;border-bottom:1px solid #1E293B}
+  h1{margin:0 0 6px;font-size:21px;letter-spacing:-.02em}
+  header p{margin:0;color:#94A3B8;max-width:104ch}
+  header b{color:#CBD5E1}
+  header code{background:#1E293B;padding:1px 5px;border-radius:4px;font-size:12px}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#1E293B;border-top:1px solid #1E293B}
+  .col{background:#0B1220;display:flex;flex-direction:column}
+  .col h2{margin:0;padding:13px 15px 5px;font-size:14.5px;font-weight:600;
+    display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .col h2 b{color:#818CF8;font-weight:700}
+  .col h2 a{font-size:11.5px;color:#60A5FA;text-decoration:none;white-space:nowrap;font-weight:500}
+  .col h2 a:hover{text-decoration:underline}
+  .d{margin:0;padding:0 15px 11px;font-size:11.5px;color:#94A3B8;line-height:1.5;min-height:62px}
+
+  /* Render each mockup at a real desktop width, then scale it down — at the raw
+     tile width the three-pane review layout collapses and can't be judged. */
+  .shot{position:relative;width:100%;overflow:hidden;
+    border-top:1px solid #1E293B;background:#fff}
+  .shot iframe{position:absolute;top:0;left:0;width:1440px;height:920px;border:0;
+    transform-origin:0 0}
+</style>
+</head>
+<body>
+<header>
+  <h1>Verity — six visual directions</h1>
+  <p>Each tile is the live mockup, rendered at desktop width and scaled to fit. Every one shows the
+  <b>same two screens</b> built from the <b>same data</b> (Rivera 2025, Line 7 capital gain, the
+  $0-basis ambiguity), so only the design varies — open one full-screen and use the toggle inside to
+  switch <b>Return review &#8596; Dashboard</b>. All six run the same GSAP trace animation on load, so
+  the motion decision is comparable too. Directions are grounded in named entries from the
+  <code>ui-ux-pro-max</code> style / palette / typography database, not invented. Tell me a number.</p>
+</header>
+<div class="grid" id="grid"></div>
+
+<script>
+const D = [
+  ['d1-ledger','D1','Ledger','Swiss Modernism 2.0 + Minimalism &middot; hairline rules instead of shadows, serif headings, print-precision figures. The furthest from generic SaaS.'],
+  ['d2-terminal','D2','Terminal','Data-Dense Dashboard, dark-first &middot; 30px rows, mono figures, keyboard-first. All 13 lines fit without scrolling.'],
+  ['d3-statement','D3','Statement','Trust &amp; Authority + Soft UI &middot; navy and premium gold on warm stock; a verified line earns a gold hairline.'],
+  ['d4-clarity','D4','Clarity','Soft UI Evolution, taxpayer-first &middot; 15px base, more air, plain language over badges. The calm direction.'],
+  ['d5-glass','D5','Glass','Glassmorphism &middot; the database&#8217;s own top pick; the document floats over the return. Flagged Perf &#9888; / contrast &#9888;.'],
+  ['d6-bento','D6','Bento','Bento Box Grid &middot; unequal tiles, document as hero tile; keeps today&#8217;s indigo and changes composition rather than palette.'],
+]
+document.getElementById('grid').innerHTML = D.map(function (d) {
+  return '<div class="col">' +
+    '<h2><span><b>' + d[1] + '</b> &middot; ' + d[2] + '</span>' +
+    '<a href="' + d[0] + '.html" target="_blank">open full &#8599;</a></h2>' +
+    '<p class="d">' + d[3] + '</p>' +
+    '<div class="shot"><iframe src="' + d[0] + '.html" loading="lazy"></iframe></div>' +
+  '</div>'
+}).join('')
+
+// keep the 1440px frames scaled to whatever the tile actually measures
+function fit() {
+  document.querySelectorAll('.shot').forEach(function (s) {
+    var k = s.clientWidth / 1440
+    s.querySelector('iframe').style.transform = 'scale(' + k + ')'
+    s.style.height = (920 * k) + 'px'
+  })
+}
+addEventListener('resize', fit)
+fit()
+</script>
+</body>
+</html>

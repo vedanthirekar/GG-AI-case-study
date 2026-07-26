@@ -1,0 +1,67 @@
+/* D3 · STATEMENT — Trust & Authority + Soft UI Evolution
+   Navy and premium gold on warm stock. Generous spacing, large figures, and a
+   seal-and-hairline treatment where the app currently uses a plain check —
+   verification is the product's central claim, so it should feel earned. */
+:root {
+  --bg: #F2EFE8; --surface: #FAF8F3; --surface2: #F1EDE3;
+  --ink: #0F172A; --muted: #55607A; --faint: #8A93A8;
+  --line: #E0DACB; --line2: #EAE5D9;
+
+  --accent: #1B2A4A; --accent-fg: #FAF8F3; --accent-deep: #0F172A; --accent-soft: #E7E9EF;
+  --good: #1D6F4F; --good-soft: #E6EFE9;
+  --warn: #A16207; --warn-deep: #7A4A05; --warn-soft: #F7EEDA;
+  --ai: #7A5B18; --ai-soft: #F4EDDC;
+  --danger: #9F1239; --danger-soft: #F6E5E9;
+
+  --paper: #FFFFFF; --paper-rule: #E4DECF; --paper-ink: #0F172A;
+
+  --f-display: 'Lexend', system-ui, sans-serif;
+  --f-sans: 'Source Sans 3', system-ui, sans-serif;
+  --f-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --w-head: 600; --track: -0.02em;
+
+  --fs-base: 14px; --fs-micro: 11px; --fs-meta: 12.5px;
+  --fs-body: 14px; --fs-lead: 15px; --fs-title: 16px; --fs-display: 26px;
+
+  --r-sm: 5px; --r: 8px; --r-lg: 10px;
+  --rail-w: 232px; --top-h: 58px; --row-h: 46px; --pad: 22px; --gap: 18px;
+  --sh1: 0 1px 2px rgb(15 23 42 / .05);
+  --sh2: 0 2px 4px rgb(15 23 42 / .05), 0 12px 32px rgb(15 23 42 / .08);
+  --card-sh: var(--sh1);
+}
+
+/* gold is a reward, not a decoration — it appears only on money and proof */
+.fact-refund .fact-v, .stat-v { color: #8A6A1F; }
+.ret-client, .dash-title { font-weight: 600; }
+.brand-mark { background: linear-gradient(140deg, #1B2A4A, #33456F); }
+
+/* a verified line earns a gold hairline down its edge */
+.line.state-verified { box-shadow: inset 3px 0 0 #C8A44A; }
+.badge.is-verified {
+  background: linear-gradient(180deg, #FBF3DF, #F3E7C8);
+  color: #7A5B18; border-color: #D8BE7C;
+}
+.badge.is-verified .badge-dot { background: #C8A44A; box-shadow: 0 0 0 2px #F3E7C8; }
+
+.line.is-sel {
+  background: linear-gradient(90deg, #EFECE2 0%, #EFECE2 50%, transparent 100%);
+  background-size: 200% 100%;
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+.line-label { font-weight: 600; }
+.money { letter-spacing: -0.01em; }
+.money.is-big { font-size: 19px; }
+.stat-v { font-size: 32px; }
+
+/* the AI panel reads as a signed opinion rather than a robot */
+.ai { background: var(--surface); border-color: var(--line); box-shadow: var(--sh1); }
+.ai-title, .ai-conf, .ai-ic { color: #7A5B18; }
+.cand.is-rec { border-color: #C8A44A; box-shadow: 0 0 0 2px #F1E4C4; }
+.cand-rec { background: #8A6A1F; }
+.pbox.is-hit { border-color: #C8A44A; background: #FBF3DF; color: #7A5B18; box-shadow: 0 0 0 3px #F1E4C4; }
+.tnode::before { border-color: var(--accent); }
+.tnode:last-child::before { background: #C8A44A; border-color: #8A6A1F; }
+.conf-bar span { background: #C8A44A; }
+
+.paper { box-shadow: var(--sh2); padding: 24px; }
+.stage-pill { background: var(--surface); }

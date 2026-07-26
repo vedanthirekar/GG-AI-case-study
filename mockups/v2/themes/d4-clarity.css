@@ -1,0 +1,66 @@
+/* D4 · CLARITY — Soft UI Evolution, taxpayer-first
+   The only direction optimised for the frightened taxpayer rather than the
+   professional. Warm stock, teal and terracotta, 15px base type, more air,
+   plain language promoted over badges, fewer simultaneous colour signals.
+   The dashboard is the stress test: does it still work to work in? */
+:root {
+  --bg: #F6F1E8; --surface: #FDFBF7; --surface2: #F4EFE6;
+  --ink: #2A2723; --muted: #6B6459; --faint: #9A9287;
+  --line: #E4DCCE; --line2: #EDE7DB;
+
+  --accent: #0F766E; --accent-fg: #FFFFFF; --accent-deep: #115E56; --accent-soft: #E2F0EE;
+  --good: #15803D; --good-soft: #E6F2E9;
+  --warn: #C2410C; --warn-deep: #9A3412; --warn-soft: #FBEBE2;
+  --ai: #7C5CBF; --ai-soft: #F0EAF9;
+  --danger: #B91C1C; --danger-soft: #F9E7E5;
+
+  --paper: #FFFFFF; --paper-rule: #E8E0D2; --paper-ink: #2A2723;
+
+  --f-display: 'Figtree', system-ui, sans-serif;
+  --f-sans: 'Noto Sans', system-ui, sans-serif;
+  --f-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --w-head: 700; --track: -0.02em;
+
+  --fs-base: 15px; --fs-micro: 12px; --fs-meta: 13px;
+  --fs-body: 15px; --fs-lead: 16px; --fs-title: 17px; --fs-display: 27px;
+
+  --r-sm: 9px; --r: 14px; --r-lg: 20px;
+  --rail-w: 236px; --top-h: 60px; --row-h: 50px; --pad: 22px; --gap: 16px;
+  --sh1: 0 1px 2px rgb(42 39 35 / .04);
+  --sh2: 0 2px 6px rgb(42 39 35 / .05), 0 14px 34px rgb(42 39 35 / .07);
+  --card-sh: var(--sh1);
+}
+
+/* words before symbols: the line number recedes, the plain label leads */
+.line-no { font-family: var(--f-sans); font-size: var(--fs-micro); }
+.line-label { font-weight: 600; }
+.line-sub { font-size: var(--fs-micro); }
+.line { padding: 9px var(--pad); }
+
+/* one calm state language — soft filled pills, no outline, no confidence noise */
+.badge { border: 0; padding: 3px 11px; font-weight: 600; }
+.badge-conf { display: none; }
+.badge.is-locked, .badge.is-readonly { background: var(--surface2); color: var(--muted); }
+.badge.is-ai { background: var(--ai-soft); color: #5B3F96; }
+
+.blocked { border-radius: var(--r); border-width: 0; border-left: 4px solid var(--warn); padding: 13px 16px; }
+.ret-client, .dash-title { font-weight: 700; }
+.brand-mark { border-radius: 9px; }
+.stat { padding: 18px var(--pad); }
+.stat-v { font-size: 30px; }
+.stat-k { text-transform: none; letter-spacing: 0; font-size: var(--fs-meta); color: var(--muted); font-weight: 600; }
+.fact-k, .tnode-k, .ai-label { text-transform: none; letter-spacing: 0; font-size: var(--fs-micro); }
+.queue-head { text-transform: none; letter-spacing: 0; font-size: var(--fs-micro); font-weight: 700; color: var(--muted); }
+
+/* the AI card explains itself in sentences rather than shouting a score */
+.ai { background: var(--surface); border-color: var(--line); box-shadow: var(--sh1); border-radius: var(--r); }
+.ai-note { font-size: var(--fs-body); }
+.ai-conf { font-family: var(--f-sans); font-weight: 600; }
+.cand { border-radius: var(--r-sm); padding: 13px 15px; }
+.cand-why { font-size: var(--fs-micro); }
+.btn { padding: 9px 16px; border-radius: 99px; }
+.btn-primary { box-shadow: 0 2px 8px rgb(15 118 110 / .28); }
+.tour-btn, .search { border-radius: 99px; padding: 7px 13px; }
+.nav-item { padding: 10px 12px; border-radius: 10px; }
+.paper { border-radius: var(--r-sm); }
+.stage-pill { padding: 3px 11px; }

@@ -1,0 +1,65 @@
+/* D1 · LEDGER — Swiss Modernism 2.0 + Minimalism (WCAG AAA, complexity Low)
+   A tax return is a printed instrument. Hairline rules instead of shadows,
+   near-zero radius, monochrome plus one ink-blue. Serif headings over a
+   humanist sans, tabular mono for every figure. */
+:root {
+  --bg: #F4F3EE; --surface: #FBFBF9; --surface2: #F1F0EA;
+  --ink: #12161C; --muted: #5A6472; --faint: #8B93A0;
+  --line: #D8D6CC; --line2: #E6E4DA;
+
+  --accent: #1D4ED8; --accent-fg: #FFFFFF; --accent-deep: #1E3A8A; --accent-soft: #E8EDFB;
+  --good: #15803D; --good-soft: #E8F2EA;
+  --warn: #A16207; --warn-deep: #854D0E; --warn-soft: #F6EEDC;
+  --ai: #4338CA; --ai-soft: #EAE9F9;
+  --danger: #B91C1C; --danger-soft: #F7E8E6;
+
+  --paper: #FFFFFF; --paper-rule: #DEDCD2; --paper-ink: #12161C;
+
+  --f-display: 'Newsreader', Georgia, serif;
+  --f-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --f-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --w-head: 600; --track: 0;
+  --fs-display: 24px; --fs-title: 16px;
+
+  --r-sm: 2px; --r: 2px; --r-lg: 2px;
+  --row-h: 40px; --pad: 18px; --gap: 0px;
+  --sh1: none; --sh2: 0 1px 3px rgb(18 22 28 / .10);
+  --card-sh: none; --card-bg: transparent;
+}
+
+/* rules, not cards */
+.pane { border: 0; border-right: 1px solid var(--line); }
+.pane:last-child { border-right: 0; }
+.split { gap: 0; border-top: 1px solid var(--line); }
+.screen { gap: 14px; padding-bottom: 0; }
+.stat, .queue { box-shadow: none; }
+.stat { border: 0; border-left: 2px solid var(--ink); border-radius: 0; padding-left: 13px; }
+.stats { gap: 22px; }
+.queue { border-left: 0; border-right: 0; border-radius: 0; }
+.queue-head { background: transparent; border-bottom: 1.5px solid var(--ink); }
+
+/* serif headings get real presence */
+.ret-client, .dash-title { font-size: var(--fs-display); font-weight: 500; }
+.brand-name { font-weight: 600; }
+.brand-mark { border-radius: 2px; }
+
+/* selection reads as a printed rule, not a highlight */
+.line.is-sel {
+  background: linear-gradient(90deg, var(--accent-soft) 0%, var(--accent-soft) 50%, transparent 100%);
+  background-size: 200% 100%;
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+.line-label { font-weight: 500; }
+
+/* badges as print marks: no fill, ruled outline */
+.badge { border-radius: 2px; background: transparent !important; border-width: 1px; padding: 1px 6px; }
+.badge.is-locked, .badge.is-readonly { border-color: var(--line); }
+.stage-pill { border-radius: 2px; background: transparent; }
+.nav-item.is-active { background: transparent; box-shadow: inset 2px 0 0 var(--accent); border-radius: 0; }
+.tour-btn, .search, .toggle button.is-on { border-radius: 2px; }
+.avatar, .nav-badge, .q-open, .badge-dot, .q-risk, .conf-bar, .conf-bar span, .cand-rec { border-radius: 2px; }
+.avatar { border-radius: 99px; }
+.ai { border-radius: 2px; background: transparent; border-left: 3px solid var(--ai); border-top: 0; border-right: 0; border-bottom: 0; padding-left: 14px; }
+.cand { border-radius: 2px; }
+.paper { border-radius: 0; }
+.paper-note { border-radius: 0; }

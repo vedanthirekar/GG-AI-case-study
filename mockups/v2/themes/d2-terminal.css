@@ -1,0 +1,82 @@
+/* D2 · TERMINAL — Data-Dense Dashboard, dark-first (Performance Excellent)
+   Built for the preparer running sixty returns a week. 30px rows, 8px gaps,
+   mono figures everywhere, keyboard affordances shown inline. Highest
+   information density of the six. */
+:root {
+  --bg: #080B14; --surface: #0F1420; --surface2: #161D2C;
+  --ink: #E4E9F2; --muted: #8B97AC; --faint: #5D6980;
+  --line: #212A3B; --line2: #1A2231;
+
+  --accent: #3B82F6; --accent-fg: #05070C; --accent-deep: #93C5FD; --accent-soft: #12233F;
+  --good: #22C55E; --good-soft: #0E2A19;
+  --warn: #F59E0B; --warn-deep: #FCD34D; --warn-soft: #2C1F08;
+  --ai: #A78BFA; --ai-soft: #201A38;
+  --danger: #F43F5E; --danger-soft: #33101C;
+
+  --paper: #141A28; --paper-rule: #263149; --paper-ink: #DCE3EF;
+
+  --f-display: 'Fira Code', ui-monospace, monospace;
+  --f-sans: 'Fira Sans', system-ui, sans-serif;
+  --f-mono: 'Fira Code', ui-monospace, monospace;
+  --w-head: 600; --track: -0.005em;
+
+  --fs-base: 12px; --fs-micro: 9.5px; --fs-meta: 10.5px;
+  --fs-body: 12px; --fs-lead: 13px; --fs-title: 13px; --fs-display: 17px;
+
+  --r-sm: 3px; --r: 4px; --r-lg: 5px;
+  --rail-w: 190px; --top-h: 44px; --row-h: 30px; --pad: 10px; --gap: 8px;
+  --sh1: none; --sh2: 0 8px 24px rgb(0 0 0 / .55);
+  --card-sh: none;
+}
+
+/* every heading is monospaced — this is a terminal, not a brochure */
+.ret-client, .dash-title, .pane-head h2, .stat-v { font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .02em; }
+.stat-v { font-size: 22px; }
+.dash-sub { max-width: 74ch; }
+
+/* scanlines of data: tighter rows, harder rules */
+.line { padding: 3px var(--pad); gap: 8px; }
+.line-sub { display: none; }
+.line-right { flex-direction: row; align-items: center; gap: 8px; }
+.line.is-sel { box-shadow: inset 2px 0 0 var(--accent); }
+.qrow { min-height: var(--row-h); }
+.queue-head { min-height: 26px; }
+.stat { padding: 9px var(--pad); }
+
+/* badges reduce to a coloured token — the label is redundant at this density */
+.badge { padding: 0 5px; border-radius: 2px; }
+.badge-txt { display: none; }
+.badge-conf { opacity: 1; }
+.badge.is-locked .badge-conf, .badge.is-readonly .badge-conf { display: none; }
+.badge.is-ai::after       { content: 'AI'; }
+.badge.is-verified::after { content: 'OK'; }
+.badge.is-review::after   { content: 'RVW'; }
+.badge.is-editable::after { content: 'EDT'; }
+.badge.is-locked::after   { content: 'FX'; }
+.badge.is-readonly::after { content: 'RO'; }
+.badge::after { font-family: var(--f-mono); font-weight: 700; letter-spacing: .04em; }
+
+/* keyboard-first cues */
+.search { min-width: 300px; }
+.nav-item::after {
+  content: attr(data-key); margin-left: auto;
+  font-family: var(--f-mono); font-size: var(--fs-micro); color: var(--faint);
+}
+.nav-item:nth-child(1)::after { content: 'g d'; }
+.nav-item:nth-child(2)::after { content: 'g r'; }
+.nav-item:nth-child(3)::after { content: 'g o'; }
+.nav-item:nth-child(4)::after { content: 'g m'; }
+.nav-item:nth-child(5)::after { content: 'g t'; }
+.nav-item:nth-child(6)::after { content: 'g c'; }
+.nav-item .nav-badge + .nav-item::after { content: ''; }
+.queue-head::after { content: 'j / k to move · enter to open'; }
+.queue-head { grid-template-columns: 1.5fr 62px 1.15fr 54px 2fr 1fr 1.05fr; position: relative; }
+.queue-head::after {
+  position: absolute; right: var(--pad); bottom: -19px; z-index: 2;
+  font-size: var(--fs-micro); color: var(--faint); text-transform: none; letter-spacing: 0;
+  font-family: var(--f-mono); font-weight: 400; pointer-events: none;
+}
+
+.stat-v { color: var(--accent-deep); }
+.paper { box-shadow: none; }
+.pbox.is-hit { box-shadow: 0 0 0 1px var(--ai), 0 0 14px color-mix(in srgb, var(--ai) 34%, transparent); }

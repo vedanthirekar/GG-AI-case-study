@@ -1,25 +1,24 @@
 // The tour's visual layer: dims the app, spotlights the target element, and
-// shows a coach card that drives navigation + the signed-in account for each step.
+// shows a coach card that navigates the app for each step.
+// It never changes who is signed in — the tour runs as you, through your own
+// work; which steps exist at all is decided by your role in TourContext.
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useTour } from './TourContext'
-import { useSession } from '../../context/SessionContext'
 import { Btn, Icon, cx } from '../../components/ui'
 
 export default function TourOverlay() {
   const { active, step, index, total, next, prev, stop, isFirst, isLast, goto } = useTour()
   const navigate = useNavigate()
-  const { switchUser } = useSession()
   const [rect, setRect] = useState(null)
   const applied = useRef(-1) // which step index we've already navigated for
 
-  // drive the app for the current step: persona + route — exactly once per step
+  // drive the app for the current step: route — exactly once per step
   useEffect(() => {
     if (!active || !step) { applied.current = -1; return }
     if (applied.current === index) return
     applied.current = index
-    if (step.persona) switchUser(step.persona)
     navigate(step.to)
 
     // then locate the spotlight target once the route settles
@@ -35,7 +34,7 @@ export default function TourOverlay() {
     }
     const t = setTimeout(find, 260)
     return () => { clearTimeout(t); clearTimeout(timer) }
-  }, [active, step, index, navigate, switchUser])
+  }, [active, step, index, navigate])
 
   // keyboard: →/← to move, esc to close
   useEffect(() => {

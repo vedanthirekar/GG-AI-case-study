@@ -143,6 +143,7 @@ function ReturningHome({ user, ret }) {
       </div>
 
       {/* what needs the client, first */}
+      <div data-tour="client-home">
       {openRequests.length > 0 ? (
         <Card className="mt-4 border-warn/30 bg-warn-soft/40 p-4">
           <div className="flex items-center gap-2 text-[13px] font-semibold text-warn"><Icon name="clock" size={15} /> Your preparer is waiting on you</div>
@@ -158,6 +159,7 @@ function ReturningHome({ user, ret }) {
           <Icon name="check" size={15} className="mr-1 inline" /> Nothing needed from you right now — we’ll reach out if that changes.
         </Card>
       )}
+      </div>
 
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
         <div><div className="mb-2 text-[11px] font-bold uppercase tracking-wider text-faint">Where your return is</div><StatusTracker ret={ret} audience="client" /></div>

@@ -83,10 +83,13 @@ function NavItem({ item, collapsed, locked, lockReason }) {
     )
   }
 
+  // active state is a printed rule down the edge, not a filled pill
   const link = (
     <NavLink to={item.to} data-tour={`nav-${item.to.replace(/\W/g, '')}`}
-      className={({ isActive }) => cx('block rounded-lg transition',
-        isActive ? 'bg-accent-soft text-accent [&_span]:text-accent' : 'text-muted hover:bg-slateSoft hover:text-ink')}>
+      className={({ isActive }) => cx('block rounded-sm transition',
+        isActive
+          ? 'bg-accent-soft/70 text-accent shadow-[inset_2px_0_0_rgb(var(--c-accent))] [&_span]:text-accent'
+          : 'text-muted hover:bg-slateSoft hover:text-ink')}>
       {body}
     </NavLink>
   )

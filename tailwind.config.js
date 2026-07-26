@@ -32,31 +32,44 @@ export default {
         inverse: { DEFAULT: t('--c-inverse'), fg: t('--c-inverse-fg') },
         scrim: t('--c-scrim'),
       },
+      // D1 "Ledger": a serif for headings over a humanist sans, with tabular mono
+      // for every figure. A tax return is a printed instrument; the type says so.
       fontFamily: {
-        display: ['"Space Grotesk"', 'Inter', 'system-ui', 'sans-serif'],
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'ui-monospace', 'SF Mono', 'Menlo', 'monospace'],
+        display: ['Newsreader', 'Georgia', 'Times New Roman', 'serif'],
+        sans: ['"IBM Plex Sans"', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'ui-monospace', 'SF Mono', 'Menlo', 'monospace'],
       },
       // Semantic type scale — replaces ad-hoc text-[13.5px] literals.
+      // Display sizes run larger than the sans-serif original: the serif carries
+      // more weight per pixel and wants the room.
       fontSize: {
         micro: ['11px', { lineHeight: '1.45' }],
         meta: ['12px', { lineHeight: '1.5' }],
         body: ['13px', { lineHeight: '1.55' }],
         lead: ['14px', { lineHeight: '1.55' }],
-        title: ['17px', { lineHeight: '1.3', letterSpacing: '-0.01em' }],
-        display: ['21px', { lineHeight: '1.22', letterSpacing: '-0.02em' }],
-        hero: ['28px', { lineHeight: '1.15', letterSpacing: '-0.025em' }],
+        title: ['16px', { lineHeight: '1.32', letterSpacing: '0' }],
+        display: ['24px', { lineHeight: '1.2', letterSpacing: '0' }],
+        hero: ['32px', { lineHeight: '1.14', letterSpacing: '-0.01em' }],
       },
-      borderRadius: { xl2: '14px', xl3: '20px' },
+      // Print precision: near-square everywhere. `rounded-full` is deliberately
+      // left alone — avatars, status dots and progress tracks stay circular.
+      borderRadius: {
+        sm: '2px', DEFAULT: '2px', md: '2px', lg: '2px', xl: '3px', '2xl': '3px',
+        xl2: '2px', xl3: '3px',
+      },
+      // Rules, not shadows. e1/e2 are flat by design — every card already carries
+      // `border border-line`, which is what separates it now. e3 survives because
+      // things that genuinely float (tooltips, popovers, the tour card, modals)
+      // still need to detach from the page to stay legible.
       boxShadow: {
-        e1: '0 1px 2px rgb(var(--shadow-rgb) / var(--shadow-a1))',
-        e2: '0 1px 2px rgb(var(--shadow-rgb) / var(--shadow-a1)), 0 6px 18px rgb(var(--shadow-rgb) / var(--shadow-a2))',
-        e3: '0 16px 40px rgb(var(--shadow-rgb) / var(--shadow-a3))',
+        e1: 'none',
+        e2: 'none',
+        e3: '0 10px 30px rgb(var(--shadow-rgb) / var(--shadow-a3))',
         // legacy aliases kept so existing screens don't need touching
-        soft: '0 1px 2px rgb(var(--shadow-rgb) / var(--shadow-a1)), 0 6px 18px rgb(var(--shadow-rgb) / var(--shadow-a2))',
-        pop: '0 16px 40px rgb(var(--shadow-rgb) / var(--shadow-a3))',
+        soft: 'none',
+        pop: '0 10px 30px rgb(var(--shadow-rgb) / var(--shadow-a3))',
         glow: '0 0 0 3px rgb(var(--c-accent) / .18)',
-        brand: '0 8px 24px rgb(var(--c-accent-fill) / .28)',
+        brand: 'none',
       },
       keyframes: {
         fadeUp: { '0%': { opacity: 0, transform: 'translateY(6px)' }, '100%': { opacity: 1, transform: 'none' } },
