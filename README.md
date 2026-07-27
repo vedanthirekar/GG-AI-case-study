@@ -2,33 +2,11 @@
 
 ## User flow, experience & navigation
 
-The app opens on a real sign-in screen, not a role picker. A **Use a demo account**
-dropdown fills in credentials for one of seven seeded identities - any password works -
-but it's deliberately one collapsed control rather than a browsable roster, so the front
-door still looks like a front door.
+The current landing page is the login page, which mainly aims as showing the feel of how the login would look like. I have created mock profiles for user to login with. more details about each profile are shown in the demo section itself.
 
-| Account | Role |
-| --- | --- |
-| Dana Morales | Preparer **+** her own personal return (two roles, one login) |
-| Sam Okafor | Reviewer - approves filing, sees internal notes |
-| Priya Nair | Firm administrator - controls People & access |
-| Jordan Lee | Seasonal staff - reduced permissions, assigned work only |
-| Jordan Rivera | Returning taxpayer, return mid-review |
-| Alex Chen | Brand-new client - first-run onboarding |
-| Maya Torres | Business owner - 1120-S |
+Once signed in, the Functionality and UI varies according to the roles. When logging in for the first time to any role, the site offers a short tour or the user can take the tour anytime if needed.
 
-Once signed in, **who you are decides everything you see** - navigation, permissions,
-vocabulary all resolve from the active role, in the same shell and the same components.
-A first-time visit to any role offers a short tour once (never auto-starting, dismissed
-is dismissed for that role/session); it runs as *you*, spotlighting your own records.
-
-Getting around and staying oriented: a persistent sidebar (contents differ by role, same
-component), breadcrumbs with a working "Back to <previous screen>", a Related-objects
-rail for jumping between connected records, **⌘K** search, and deep links that carry full
-context and **survive signing in** - a link opened while signed out resumes exactly there
-after authentication instead of dropping you on a dashboard. The `?` drawer holds two
-tabs: written guides/FAQ, and **Ask Vantage**, an assistant grounded in your role, your
-permissions and the screen in front of you.
+For navigability, being stuck or confused, there is mainly AI assitant to get help from. There are also guides and faqs in the website for each page, workflow.
 
 ---
 
@@ -36,26 +14,20 @@ permissions and the screen in front of you.
 
 **Genuinely wired up - real code doing real work:**
 
-- **A live store + recompute engine** (`StoreContext.jsx`). Verifying or correcting a
-  field, choosing an AI interpretation, adding a note, ingesting a document - all write to
-  it, and dependent lines, the refund and every counter recompute through a real
-  (simplified) 2025 MFJ bracket function.
-- **Role access control** (`AccessContext.jsx` + `roles.js`). An administrator's grants
-  are the actual authority a session resolves against, so changing someone's role
-  genuinely changes what they can do. The People & access screen generates its
-  permission text from the same `CAPS` map the app enforces, so they can't drift apart.
-- **The prioritisation engine** (`prioritize.js`) - scores and ranks all 113 tasks by due
-  date, blocking status, kind and stage; the dashboard is a real view over it.
-- **The relationship graph** (`relationships.js`), search/filtering/faceting, the status
-  state machine, breadcrumbs, deep links, and the tour engine (one step pool filtered by
-  role and live conditions).
-- **Ask Vantage** (`assistant.js`, `gemini.js`, `api/gemini.js`) - the one place a real
-  model is called, behind a serverless function so the API key never reaches the browser.
-  Its brief is *compiled* from the app's own sources (so it can't drift from what the
-  product does), its context is live session/store state (so it quotes current figures,
-  not seed data), and permission is enforced at prompt assembly - a client's prompt never
-  contains firm-only content, so there's nothing to leak. Every link and citation it
-  offers is validated against the real route table before it renders.
+- **Ask Vantage.** A serverless function calls the real Gemini model, so the API key
+  never reaches the browser. Its knowledge is built from the app's own code, not
+  hand-written, so it can't drift from what the product actually does. It only ever sees
+  what the signed-in user is allowed to see.
+- **Live store and recompute engine.** Editing, verifying, or correcting a field updates
+  one central store. Every number that depends on it, including the refund, recalculates
+  from a real tax formula.
+- **Role-based access control.** An admin's permission changes are the real source of
+  truth. Changing someone's role actually changes what they can see and do.
+- **Prioritization engine.** A scoring function ranks every task by due date, blocking
+  status, and stage. The dashboard is a live view of that ranking, not a fixed list.
+- **Navigation and search.** Breadcrumbs, related-item links, search, and the guided
+  tour are all built on the app's real data and permissions, not hardcoded per screen.
+
 
 **Simulated - fabricated but plausible, by design:**
 
