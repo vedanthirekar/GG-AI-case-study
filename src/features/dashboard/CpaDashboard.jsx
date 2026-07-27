@@ -17,6 +17,20 @@ import { CAPS } from '../../lib/roles'
 
 const KIND_LABEL = { review: 'Review', prep: 'Prepare', request: 'Request', question: 'Question', approval: 'Approval' }
 
+// The greeting is the one piece of copy on this screen that should match the
+// clock on the wall rather than the seeded TODAY - everything else here (due
+// dates, "today's" date in the header) is pinned to 2026-07-24 so the mock
+// data stays internally consistent, but "good afternoon" at 11pm reads as
+// broken in a way that matters more than the demo dataset does.
+function timeGreeting() {
+  const h = new Date().getHours()
+  if (h < 5) return 'Working late'
+  if (h < 12) return 'Good morning'
+  if (h < 17) return 'Good afternoon'
+  if (h < 21) return 'Good evening'
+  return 'Working late'
+}
+
 // Who gets a scope toggle at all. A reviewer signs off other people's work and
 // an administrator runs the practice - neither has a personal queue worth
 // separating out, so the control would be a switch with one useful position.
@@ -81,7 +95,7 @@ export default function CpaDashboard() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="text-[12px] font-semibold uppercase tracking-wide text-accent">Dashboard</div>
-          <h1 className="mt-0.5 text-xl font-bold tracking-tight">Good afternoon, {user.name.split(' ')[0]}</h1>
+          <h1 className="mt-0.5 text-xl font-bold tracking-tight">{timeGreeting()}, {user.name.split(' ')[0]}</h1>
           <p className="text-[13px] text-muted">{today} · {nextDeadline}</p>
         </div>
         {hasToggle && (
