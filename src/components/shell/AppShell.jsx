@@ -142,7 +142,13 @@ export default function AppShell() {
 
       {/* The launcher hides while the drawer is open - it would otherwise sit
           on top of the panel it just opened. */}
-      <AssistantFab hidden={helpOpen} onOpen={() => { setPrefill(''); setHelpTab('ask'); setHelpOpen(true) }} />
+      {/* Also hidden on /help: that page already offers three explicit paths to
+          the assistant inline (search handoff, the "got a question" card, the
+          empty-results button), and its own layout - a submit button pinned to
+          a card's bottom-right - sat directly under this fixed corner and ate
+          its clicks. */}
+      <AssistantFab hidden={helpOpen || loc.pathname.startsWith('/help')}
+        onOpen={() => { setPrefill(''); setHelpTab('ask'); setHelpOpen(true) }} />
 
       <HelpDrawer open={helpOpen} onClose={() => setHelpOpen(false)}
         tab={helpTab} onTabChange={setHelpTab} prefill={prefill} />

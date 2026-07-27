@@ -110,7 +110,7 @@ export const PAGE_HELP = [
     'Status wording here is the same vocabulary the client sees - no translation needed.',
     'Use ⌘K to jump straight to a client instead of scrolling.',
   ], faq: ['q-search'] },
-  { match: '/documents', title: 'Clients', points: [
+  { match: '/documents', title: 'Client Docs', points: [
     'The library opens by client, so you start from a file rather than a pile.',
     'Clients with something outstanding sort to the top.',
     'The search box still reaches every document you can see - you don’t have to know whose it is.',

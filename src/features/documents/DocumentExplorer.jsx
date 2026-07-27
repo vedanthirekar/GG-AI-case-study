@@ -47,10 +47,10 @@ export default function DocumentExplorer({ scope, embeddedReturnId, returnId, on
     if (embedded) return
     if (returnId) {
       // Reached from the client list - the breadcrumb has to lead back to it.
-      publish({ crumbs: [{ label: 'Clients', to: '/documents' }, { label: returnById(returnId)?.clientName || 'Client' }] })
+      publish({ crumbs: [{ label: 'Client Docs', to: '/documents' }, { label: returnById(returnId)?.clientName || 'Client' }] })
       return
     }
-    publish({ crumbs: [{ label: caps.isClient ? 'My documents' : 'Clients' }] })
+    publish({ crumbs: [{ label: caps.isClient ? 'My documents' : 'Client Docs' }] })
   }, [publish, embedded, returnId, caps.isClient])
 
   const filtered = useMemo(() => {

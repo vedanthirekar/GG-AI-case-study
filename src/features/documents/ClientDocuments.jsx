@@ -28,7 +28,7 @@ export default function ClientDocuments() {
   const navigate = useNavigate()
   const [q, setQ] = useState('')
 
-  useEffect(() => { publish({ crumbs: [{ label: 'Clients' }] }) }, [publish])
+  useEffect(() => { publish({ crumbs: [{ label: 'Client Docs' }] }) }, [publish])
 
   // "Mine" means a file I'm actually on: preparing it, reviewing it, or holding
   // a task against it. A reviewer's clients are the ones they sign off, which
@@ -91,7 +91,7 @@ export default function ClientDocuments() {
 
   return (
     <div className="mx-auto max-w-4xl px-5 py-6">
-      <PageHeader eyebrow="Clients" icon="users" title="Client files"
+      <PageHeader eyebrow="Client Docs" icon="users" title="Client files"
         subtitle="Open a client to see everything on their file. Search reaches across every document you can see."
         actions={hasToggle ? (
           <div className="flex rounded-lg border border-line bg-surface p-0.5 text-[12px] font-semibold">

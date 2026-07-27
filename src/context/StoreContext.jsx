@@ -7,7 +7,7 @@
 // behaves like a system instead of a slideshow.
 // ============================================================================
 import { createContext, useContext, useMemo, useState, useCallback, useRef } from 'react'
-import { returnById as seedReturn, notes as seedNotes, activitySeed } from '../data/db'
+import { returnById as seedReturn, notes as seedNotes, activitySeed, threadsForReturn } from '../data/db'
 
 const StoreCtx = createContext(null)
 
@@ -148,20 +148,34 @@ export function StoreProvider({ children }) {
   const isFulfilled = useCallback((threadId) => fulfilled.has(threadId), [fulfilled])
   const isFlashing = useCallback((rid, fid) => flashes.has(`${rid}:${fid}`), [flashes])
 
+  // A return is only ever blocked on something a person is waiting on - and for
+  // every return that names one, that "something" is a request attached to a
+  // thread. So a block clears when that request is fulfilled, live, rather than
+  // sitting on the return as a fact fixed at seed time. Generated returns whose
+  // block reason isn't tied to any thread (there's nothing to fulfill) keep
+  // their seed value - there's no live signal for them to react to.
+  const isBlockLifted = useCallback((rid) => {
+    const blockingThread = threadsForReturn(rid).find((t) => t.request)
+    if (!blockingThread) return false
+    return blockingThread.request.fulfilled || isFulfilled(blockingThread.id)
+  }, [isFulfilled])
+
   // live summary derived from current field states
   const summary = useCallback((rid) => {
     const fields = getFields(rid)
     const done = (s) => s === 'verified' || s === 'locked' || s === 'readonly'
     const verified = fields.filter((f) => done(f.state)).length
     const refundField = fields.find((f) => f.line === '34')
+    const seed = seedReturn(rid)
     return {
       fieldsVerified: verified,
       fieldsTotal: fields.length,
       needsReview: fields.filter((f) => f.state === 'review').length,
-      refund: refundField ? refundField.amount : seedReturn(rid)?.refund,
+      refund: refundField ? refundField.amount : seed?.refund,
       allVerified: fields.length > 0 && fields.every((f) => done(f.state)),
+      blocked: Boolean(seed?.blocked) && !isBlockLifted(rid),
     }
-  }, [getFields])
+  }, [getFields, isBlockLifted])
 
   // ---- notification centre --------------------------------------------------
   const markAllRead = useCallback(() => setReadIds(new Set(activity.map((a) => a.id))), [activity])
@@ -169,11 +183,11 @@ export function StoreProvider({ children }) {
 
   const value = useMemo(() => ({
     getFields, getField, verifyField, correctField, pickInterpretation, flagField,
-    ingestDocument, getExtraDocs, fulfillRequest, isFulfilled, isFlashing, summary,
+    ingestDocument, getExtraDocs, fulfillRequest, isFulfilled, isFlashing, summary, isBlockLifted,
     getNotes, addNote, toggleNote,
     activity, pushActivity, markAllRead, isRead,
   }), [getFields, getField, verifyField, correctField, pickInterpretation, flagField, ingestDocument,
-    getExtraDocs, fulfillRequest, isFulfilled, isFlashing, summary, getNotes, addNote, toggleNote,
+    getExtraDocs, fulfillRequest, isFulfilled, isFlashing, summary, isBlockLifted, getNotes, addNote, toggleNote,
     activity, pushActivity, markAllRead, isRead])
 
   return <StoreCtx.Provider value={value}>{children}</StoreCtx.Provider>

@@ -15,7 +15,7 @@ export const NAV = {
     // The document library opens by client, so the rail says what you'll
     // actually land on. Taxpayers still see "My documents" - for them there is
     // only one file, and it's theirs.
-    { to: '/documents', label: 'Clients', icon: 'users' },
+    { to: '/documents', label: 'Client Docs', icon: 'users' },
     { to: '/messages', label: 'Messages', icon: 'chat' },
   ],
   client: [

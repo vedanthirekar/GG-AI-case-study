@@ -11,6 +11,7 @@ import { rankTasks, summarize, sortTasks, daysUntil, TODAY } from '../../lib/pri
 import { returnAiFlags } from '../../data/ai'
 import { useSession } from '../../context/SessionContext'
 import { useChrome } from '../../context/ChromeContext'
+import { useStore } from '../../context/StoreContext'
 import { Card, Tag, Icon, Money, Avatar, EmptyState, SkeletonRows, cx } from '../../components/ui'
 import useSimulatedLoad from '../../lib/useSimulatedLoad'
 import { CAPS } from '../../lib/roles'
@@ -40,7 +41,15 @@ const scopeToggleFor = (role) => role === 'preparer'
 export default function CpaDashboard() {
   const { user, activeRole, caps } = useSession()
   const { publish } = useChrome()
+  const { isBlockLifted } = useStore()
   const hasToggle = scopeToggleFor(activeRole)
+  // A task seeded as blocked stays blocked here unless the specific thing it
+  // was waiting on - a fulfilled request on its return - has actually come in.
+  // Most tasks' blockers aren't tied to a live signal at all, so this only
+  // ever touches the ones that are (see StoreContext's isBlockLifted).
+  const liveTasks = useMemo(() =>
+    allTasks.map((t) => (t.blocked && isBlockLifted(t.returnId) ? { ...t, blocked: false } : t)),
+    [isBlockLifted])
   // Preparers land on their own work; reviewers and admins are firm-wide by
   // definition; seasonal staff only ever see what they're assigned.
   const [scope, setScope] = useState(
@@ -57,7 +66,7 @@ export default function CpaDashboard() {
   const firmStaff = users.filter((u) => !CAPS[u.primary]?.isClient)
 
   const ranked = useMemo(() => {
-    let base = rankTasks(allTasks, {
+    let base = rankTasks(liveTasks, {
       assigneeId: scope === 'mine' ? user.id : (assignee || undefined),
       kind: kind || undefined,
       onlyBlocked,
@@ -68,11 +77,11 @@ export default function CpaDashboard() {
     const term = q.trim().toLowerCase()
     if (term) base = base.filter((t) => (returnById(t.returnId)?.clientName || '').toLowerCase().includes(term))
     return sortTasks(base, sort)
-  }, [scope, user.id, assignee, kind, onlyBlocked, severity, sort, q])
+  }, [liveTasks, scope, user.id, assignee, kind, onlyBlocked, severity, sort, q])
 
   const counters = useMemo(() => summarize(
-    scope === 'mine' ? allTasks.filter((t) => t.assigneeId === user.id) : (assignee ? allTasks.filter((t) => t.assigneeId === assignee) : allTasks)
-  ), [scope, user.id, assignee])
+    scope === 'mine' ? liveTasks.filter((t) => t.assigneeId === user.id) : (assignee ? liveTasks.filter((t) => t.assigneeId === assignee) : liveTasks)
+  ), [liveTasks, scope, user.id, assignee])
 
   // A date and the nearest deadline: two facts a preparer actually wants on
   // arrival, in place of a sentence about how good the ranking is.

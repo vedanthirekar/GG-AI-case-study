@@ -15,7 +15,7 @@ export default function StatusTracker({ ret, audience = 'staff' }) {
   const verified = live.fieldsTotal ? live.fieldsVerified : ret.fieldsVerified
   const total = live.fieldsTotal || ret.fieldsTotal
   const current = stageIndex(ret.stage)
-  const owner = ownerOf(ret)
+  const owner = ownerOf(ret, live.blocked)
 
   return (
     <div className="space-y-4">
@@ -39,7 +39,7 @@ export default function StatusTracker({ ret, audience = 'staff' }) {
             <div className={cx('mt-0.5 text-[13px] font-semibold', owner.isYou ? 'text-accent' : 'text-ink')}>{owner.label}</div>
           </div>
         </div>
-        {ret.blocked && (
+        {live.blocked && (
           <div className="mt-3 flex items-start gap-2 rounded-lg bg-danger-soft px-3 py-2 text-[12px] text-danger">
             <Icon name="alert" size={14} className="mt-0.5 shrink-0" />
             <span><b>Blocking completion:</b> {audience === 'client' ? clientBlock(ret) : ret.blockReason}</span>
@@ -85,10 +85,10 @@ export default function StatusTracker({ ret, audience = 'staff' }) {
   )
 }
 
-function ownerOf(ret) {
+function ownerOf(ret, blocked) {
   // who has the ball right now
   const i = stageIndex(ret.stage)
-  if (ret.blocked) return { label: `${ret.clientName} (needs info)`, isYou: false }
+  if (blocked) return { label: `${ret.clientName} (needs info)`, isYou: false }
   if (i <= 1) return { label: ret.clientName, isYou: false }
   if (i === 3) return { label: userById(ret.reviewerId)?.name || 'Reviewer', isYou: false }
   if (i === 4) return { label: `${ret.clientName} (approval)`, isYou: false }

@@ -38,7 +38,7 @@ const ROUTES = [
   { path: '/dashboard', side: 'firm', desc: 'Ranked queue of everything open' },
   { path: '/returns', side: 'firm', desc: 'All returns' },
   { path: '/returns/:rid', side: 'both', desc: 'One return - add ?tab=review|documents|messages|notes|status, and &field=<id> to select a line' },
-  { path: '/documents', side: 'firm', desc: 'Clients - the document library, opened by client (the nav calls this "Clients"). Its search reaches every document firm-wide' },
+  { path: '/documents', side: 'firm', desc: 'Client Docs - the document library, opened by client (the nav calls this "Client Docs"). Its search reaches every document firm-wide' },
   { path: '/documents/:rid', side: 'firm', desc: 'One client’s documents (rid is the return id, e.g. r-rivera)' },
   { path: '/messages', side: 'both', desc: 'Threaded conversations' },
   { path: '/home', side: 'client', desc: 'Taxpayer home - the single next action' },
@@ -177,7 +177,7 @@ export function buildLiveContext({ session, store, location, crumbs }) {
   }
 
   // -- a firm user's ranked queue ------------------------------------------
-  if (isFirm) out.push(describeQueue(session))
+  if (isFirm) out.push(describeQueue(session, store))
 
   return out.filter(Boolean).join('\n\n')
 }
@@ -206,7 +206,7 @@ function describeReturn(ret, session, store, params, heading = 'The return on sc
     `Progress: ${live.fieldsVerified} of ${live.fieldsTotal} lines verified; ${live.needsReview} still need review.` +
       (live.allVerified ? ' Every line is done.' : ''),
   ]
-  if (ret.blocked && ret.blockReason) lines.push(`BLOCKED: ${ret.blockReason}`)
+  if (live.blocked && ret.blockReason) lines.push(`BLOCKED: ${ret.blockReason}`)
 
   // The lines that actually need attention, with their live amounts.
   const fields = store.getFields(ret.id)
@@ -265,8 +265,14 @@ function describeReturn(ret, session, store, params, heading = 'The return on sc
   return lines.join('\n')
 }
 
-function describeQueue({ user, caps }) {
-  const mine = caps.seeAllReturns ? allTasks : allTasks.filter((t) => t.assigneeId === user?.id)
+function describeQueue({ user, caps }, store) {
+  // Same correction the dashboard applies: a task seeded as blocked only stays
+  // that way here if the thing it was waiting on hasn't actually come in yet -
+  // otherwise the assistant would keep telling people about a block the
+  // product itself no longer shows them.
+  const liveTasks = allTasks.map((t) =>
+    t.blocked && store.isBlockLifted(t.returnId) ? { ...t, blocked: false } : t)
+  const mine = caps.seeAllReturns ? liveTasks : liveTasks.filter((t) => t.assigneeId === user?.id)
   const ranked = rankTasks(mine, { assigneeId: user?.id })
   const s = summarize(mine.filter((t) => t.assigneeId === user?.id))
   const top = ranked.slice(0, 6).map((t) => {

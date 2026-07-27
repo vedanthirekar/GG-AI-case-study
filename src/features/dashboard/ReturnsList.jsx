@@ -6,12 +6,14 @@ import { returns } from '../../data/db'
 import { STAGES, stageIndex } from '../../data/catalog'
 import { useChrome } from '../../context/ChromeContext'
 import { useSession } from '../../context/SessionContext'
+import { useStore } from '../../context/StoreContext'
 import { Card, Tag, Icon, Money, cx } from '../../components/ui'
 import StageChip from '../status/StageChip'
 
 export default function ReturnsList() {
   const { publish } = useChrome()
   const { user, caps } = useSession()
+  const { isBlockLifted } = useStore()
   const [q, setQ] = useState('')
   const [stage, setStage] = useState('')
   useEffect(() => { publish({ crumbs: [{ label: 'Returns' }] }) }, [publish])
@@ -50,7 +52,7 @@ export default function ReturnsList() {
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
                 <span className="truncate text-[14px] font-semibold">{r.clientName}</span>
-                {r.blocked && <Tag tone="danger" dot>Blocked</Tag>}
+                {r.blocked && !isBlockLifted(r.id) && <Tag tone="danger" dot>Blocked</Tag>}
                 {r.isNewClient && <Tag tone="accent">New</Tag>}
               </div>
               <div className="text-[12px] text-muted">{r.form} · {r.year} · {r.fieldsVerified}/{r.fieldsTotal} fields verified</div>

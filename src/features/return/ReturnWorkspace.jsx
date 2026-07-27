@@ -77,7 +77,7 @@ export default function ReturnWorkspace() {
             <div className="flex items-center gap-2">
               <h1 className="text-[17px] font-bold tracking-tight">{ret.clientName}</h1>
               {ret.personalOf && <Tag tone="accent">Your personal return</Tag>}
-              {ret.blocked && <Tag tone="danger" dot>Blocked</Tag>}
+              {live?.blocked && <Tag tone="danger" dot>Blocked</Tag>}
             </div>
             <div className="text-[12px] text-muted">{ret.form} · Tax year {ret.year} · Preparer {userById(ret.preparerId)?.name}</div>
           </div>
@@ -89,7 +89,7 @@ export default function ReturnWorkspace() {
           </div>
         </div>
 
-        {ret.blocked && audience === 'staff' && (
+        {live?.blocked && audience === 'staff' && (
           <div className="mt-3 flex items-center gap-2 rounded-lg bg-danger-soft px-3 py-2 text-[12px] text-danger">
             <Icon name="alert" size={14} /> <b>Blocked:</b> {ret.blockReason}
           </div>
