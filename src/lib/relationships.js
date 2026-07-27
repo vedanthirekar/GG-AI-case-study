@@ -1,5 +1,5 @@
 // ============================================================================
-// Relationship graph (Challenge 04 — navigation that preserves context).
+// Relationship graph (Challenge 04 - navigation that preserves context).
 // The connections between objects are derived from IDs already present in the
 // mock data (a field points to a source doc; a thread points to a field or doc;
 // a task belongs to a return). relatedTo() returns everything connected to a

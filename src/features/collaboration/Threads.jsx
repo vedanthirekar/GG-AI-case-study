@@ -1,5 +1,5 @@
 // Client & CPA collaboration (Challenge 02).
-// Conversations are anchored to a specific document, field or issue — never a
+// Conversations are anchored to a specific document, field or issue - never a
 // generic inbox. Internal firm notes are visually distinct AND hidden from
 // clients (permission, not just styling). Every thread shows who owns the next
 // action, and outstanding requests are tracked explicitly.
@@ -81,7 +81,7 @@ function ThreadView({ thread, ret }) {
 
   return (
     <div className="mx-auto max-w-2xl p-5">
-      {/* context header — what this is attached to */}
+      {/* context header - what this is attached to */}
       <Card className="mb-3 p-4">
         <div className="flex items-center justify-between gap-2">
           <div>
@@ -130,7 +130,7 @@ function ThreadView({ thread, ret }) {
             <div className="mb-2 text-[11px] font-medium text-faint">Seasonal staff can message the client, but internal notes are limited to preparers and reviewers.</div>
           )}
           <textarea value={draft} onChange={(e) => setDraft(e.target.value)} rows={2}
-            placeholder={internal ? 'Internal note — not visible to the client…' : 'Write to the client…'}
+            placeholder={internal ? 'Internal note - not visible to the client…' : 'Write to the client…'}
             className={cx('w-full resize-none rounded-lg border p-2.5 text-[13px] outline-none focus:border-accent', internal ? 'border-warn/40 bg-warn-soft/40' : 'border-line bg-surface')} />
           <div className="mt-2 flex items-center justify-between">
             <span className="text-[11px] text-faint">{internal ? '🔒 Only firm staff will see this.' : '👁 The client will see this.'}</span>

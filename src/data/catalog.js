@@ -14,7 +14,7 @@ export const ROLES = {
 
 // ---- Return lifecycle stages (Challenge 06) ---------------------------------
 // One ordered vocabulary. `clientLabel` is what the taxpayer sees; `staffLabel`
-// is the firm-facing wording. Same underlying stage — appropriate detail per audience.
+// is the firm-facing wording. Same underlying stage - appropriate detail per audience.
 export const STAGES = [
   { key: 'documents', clientLabel: 'Gathering your documents', staffLabel: 'Document intake', desc: 'Collecting the forms needed to start.' },
   { key: 'questions', clientLabel: 'A few questions for you', staffLabel: 'Client questionnaire', desc: 'Answers we need before preparing.' },
@@ -25,12 +25,12 @@ export const STAGES = [
 ]
 export const stageIndex = (key) => STAGES.findIndex((s) => s.key === key)
 
-// ---- Field interaction states (Challenge 08 — clickable vs editable) --------
+// ---- Field interaction states (Challenge 08 - clickable vs editable) --------
 // The single visual language for affordances, reused on every screen.
 export const FIELD_STATES = {
   ai: {
     key: 'ai', label: 'AI extracted', short: 'AI',
-    desc: 'Pulled from a source document by Verity AI. Review before it counts as verified.',
+    desc: 'Pulled from a source document by Vantage AI. Review before it counts as verified.',
     editable: true, approvable: true,
   },
   verified: {
@@ -40,7 +40,7 @@ export const FIELD_STATES = {
   },
   review: {
     key: 'review', label: 'Needs review', short: 'Review',
-    desc: 'Flagged for a human to look at — low confidence or a mismatch.',
+    desc: 'Flagged for a human to look at - low confidence or a mismatch.',
     editable: true, approvable: true,
   },
   editable: {

@@ -1,5 +1,5 @@
-// Simulated document ingestion (Challenge 10 — "how you present AI extraction").
-// No real OCR: picking a sample doc runs a staged fake pipeline — upload →
+// Simulated document ingestion (Challenge 10 - "how you present AI extraction").
+// No real OCR: picking a sample doc runs a staged fake pipeline - upload →
 // extract (fields reveal one by one, confidence counts up) → apply. On apply it
 // writes a new document + extracted field into the store, so the return updates
 // live and the new value is fully traceable back to this doc.
@@ -11,11 +11,11 @@ import { Btn, Icon, Money, cx } from '../../components/ui'
 // A few plausible documents a client might drop in.
 const PRESETS = [
   { type: '1099-INT', issuer: 'Coastal Credit Union', cat: 'Income', line: '2b', group: 'Income', label: 'Taxable interest', amount: 318, conf: 94,
-    boxes: [{ key: 'payer', label: 'Payer', value: 'Coastal Credit Union' }, { key: 'box1', label: 'Box 1 — Interest income', value: '318.00' }], sourceBox: 'box1' },
+    boxes: [{ key: 'payer', label: 'Payer', value: 'Coastal Credit Union' }, { key: 'box1', label: 'Box 1 - Interest income', value: '318.00' }], sourceBox: 'box1' },
   { type: '1099-NEC', issuer: 'Brightside Studio', cat: 'Income', line: '8', group: 'Income', label: 'Nonemployee compensation', amount: 7400, conf: 88,
-    boxes: [{ key: 'payer', label: 'Payer', value: 'Brightside Studio' }, { key: 'box1', label: 'Box 1 — Nonemployee comp.', value: '7,400.00' }], sourceBox: 'box1' },
+    boxes: [{ key: 'payer', label: 'Payer', value: 'Brightside Studio' }, { key: 'box1', label: 'Box 1 - Nonemployee comp.', value: '7,400.00' }], sourceBox: 'box1' },
   { type: '1098-T', issuer: 'State University', cat: 'Deductions', line: '21', group: 'Deductions', label: 'Tuition (1098-T)', amount: 4200, conf: 79,
-    boxes: [{ key: 'inst', label: 'Institution', value: 'State University' }, { key: 'box1', label: 'Box 1 — Payments received', value: '4,200.00' }], sourceBox: 'box1' },
+    boxes: [{ key: 'inst', label: 'Institution', value: 'State University' }, { key: 'box1', label: 'Box 1 - Payments received', value: '4,200.00' }], sourceBox: 'box1' },
 ]
 
 export default function IngestDocument({ rid, onClose }) {
@@ -49,11 +49,11 @@ export default function IngestDocument({ rid, onClose }) {
   const apply = () => {
     const docId = `d-ingest-${Date.now()}`
     const doc = { id: docId, returnId: rid, clientId: '', type: preset.type, category: preset.cat,
-      name: `${preset.type} — ${preset.issuer}`, issuer: preset.issuer, pages: 1,
+      name: `${preset.type} - ${preset.issuer}`, issuer: preset.issuer, pages: 1,
       uploaded: new Date().toISOString().slice(0, 10), status: 'processed', source: 'client-upload', boxes: preset.boxes }
     const field = { id: `f-ingest-${Date.now()}`, line: preset.line, group: preset.group, label: preset.label,
       amount: preset.amount, state: 'ai', confidence: preset.conf, sourceDocId: docId, sourceBox: preset.sourceBox,
-      sourceLocation: `${preset.boxes[preset.boxes.length - 1].label.split('—')[0].trim()} · page 1`, transform: 'Copied as-is',
+      sourceLocation: `${preset.boxes[preset.boxes.length - 1].label.split(' - ')[0].trim()} · page 1`, transform: 'Copied as-is',
       aiNote: 'Freshly extracted from an uploaded document.' }
     ingestDocument(rid, doc, [field])
     onClose()
@@ -72,13 +72,13 @@ export default function IngestDocument({ rid, onClose }) {
           <div className="p-5">
             <div className="mb-3 rounded-xl2 border-2 border-dashed border-line py-8 text-center text-[13px] text-muted">
               <Icon name="upload" size={26} className="mx-auto mb-2 text-faint" />
-              Drop a file here — or pick a sample to simulate extraction
+              Drop a file here - or pick a sample to simulate extraction
             </div>
             <div className="space-y-2">
               {PRESETS.map((p) => (
                 <button key={p.type} onClick={() => run(p)} className="flex w-full items-center gap-3 rounded-lg border border-line px-3 py-2.5 text-left hover:border-accent/40 hover:bg-accent-soft/40">
                   <Icon name="doc" size={18} className="text-faint" />
-                  <div className="flex-1"><div className="text-[13px] font-semibold">{p.type} — {p.issuer}</div><div className="text-[11px] text-muted">Adds to Line {p.line} · {p.label}</div></div>
+                  <div className="flex-1"><div className="text-[13px] font-semibold">{p.type} - {p.issuer}</div><div className="text-[11px] text-muted">Adds to Line {p.line} · {p.label}</div></div>
                   <Icon name="play" size={14} className="text-accent" />
                 </button>
               ))}

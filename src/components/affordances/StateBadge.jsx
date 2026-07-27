@@ -1,5 +1,5 @@
 // The affordance vocabulary (Challenge 08). ONE component renders the state of
-// any value — AI-generated, verified, needs-review, editable, locked, read-only —
+// any value - AI-generated, verified, needs-review, editable, locked, read-only -
 // so the same visual language appears identically on every screen.
 import { FIELD_STATES } from '../../data/catalog'
 import { Tag, Tooltip, Icon } from '../ui'
@@ -20,7 +20,7 @@ export default function StateBadge({ state, withIcon = true, confidence }) {
   )
 }
 
-// Legend that explains the whole system in one place — surfaced in the app so
+// Legend that explains the whole system in one place - surfaced in the app so
 // the vocabulary is learnable, not guessed at.
 export function AffordanceLegend() {
   return (

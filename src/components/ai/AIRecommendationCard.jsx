@@ -1,4 +1,4 @@
-// Trustworthy-AI interaction model (Challenge 10) — now live.
+// Trustworthy-AI interaction model (Challenge 10) - now live.
 // Shows WHAT the AI did, WHY, the EVIDENCE, the UNCERTAINTY, a prior-year sanity
 // check, and the recommended ACTION. For genuinely ambiguous fields it presents
 // a CHOICE between interpretations (with evidence) instead of a single guess.
@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { explainField } from '../../data/ai'
 import { docById } from '../../data/db'
 import { useStore } from '../../context/StoreContext'
-import { ConfidenceMeter, ConfidencePill, confidenceTone } from '../affordances/ConfidenceBadge'
+import { ConfidencePill, confidenceTone } from '../affordances/ConfidenceBadge'
 import { Btn, Icon, Money, Tag, cx } from '../ui'
 import { useSession } from '../../context/SessionContext'
 import { whyLocked } from '../../lib/roles'
@@ -23,7 +23,7 @@ export default function AIRecommendationCard({ rid, field }) {
   if (!field) {
     return (
       <div className="rounded-xl2 border border-line bg-surface p-6 text-center text-sm text-muted">
-        Select a field on the left to see how Verity AI derived it.
+        Select a field on the left to see how Vantage AI derived it.
       </div>
     )
   }
@@ -38,7 +38,7 @@ export default function AIRecommendationCard({ rid, field }) {
       <div className="flex items-center justify-between px-4 pt-4">
         <div className="flex items-center gap-2 font-display font-bold text-ai">
           <span className="grid h-6 w-6 place-items-center rounded-lg bg-ai/12 text-ai"><Icon name="sparkle" size={14} /></span>
-          Verity AI
+          Vantage AI
         </div>
         <ConfidencePill value={field.confidence} />
       </div>
@@ -50,7 +50,9 @@ export default function AIRecommendationCard({ rid, field }) {
         {/* prior-year sanity check */}
         {field.prior != null && field.prior !== field.amount && <PriorDelta amount={field.amount} prior={field.prior} anomaly={field.anomaly} />}
 
-        {field.confidence != null && <ConfidenceMeter value={field.confidence} className="mt-3" />}
+        {/* No confidence meter: the pill in the header already states the exact
+            figure and its band. A bar underneath restated it in a vaguer form
+            and pulled the eye away from what the AI actually said. */}
 
         {/* uncertainty */}
         {ai.uncertainty && !resolved && (
@@ -60,11 +62,11 @@ export default function AIRecommendationCard({ rid, field }) {
           </div>
         )}
 
-        {/* RECONCILIATION — choose between interpretations */}
+        {/* RECONCILIATION - choose between interpretations */}
         {needsChoice ? (
           <div className="mt-3">
             <div className="mb-2 flex items-center gap-1.5 text-[12px] font-semibold text-ink">
-              <Icon name="scale" size={14} className="text-ai" /> Two possible readings — you decide
+              <Icon name="scale" size={14} className="text-ai" /> Two possible readings - you decide
             </div>
             <div className="space-y-2">
               {field.candidates.map((c) => (
@@ -74,7 +76,7 @@ export default function AIRecommendationCard({ rid, field }) {
               ))}
             </div>
             <button onClick={() => { setDraft(field.amount); setCorrecting(true) }} className="mt-2 text-[12px] font-semibold text-accent">
-              Neither — enter my own value
+              Neither - enter my own value
             </button>
           </div>
         ) : (
@@ -130,7 +132,7 @@ export default function AIRecommendationCard({ rid, field }) {
           </div>
         ) : field.state === 'locked' ? (
           <div className="mt-4 rounded-lg bg-slateSoft px-3 py-2 text-[12px] text-muted">
-            <Icon name="lock" size={13} className="mr-1 inline" /> Calculated automatically — edit the input lines to change it.
+            <Icon name="lock" size={13} className="mr-1 inline" /> Calculated automatically - edit the input lines to change it.
           </div>
         ) : field.state === 'readonly' ? (
           <div className="mt-4 rounded-lg bg-slateSoft px-3 py-2 text-[12px] text-muted">

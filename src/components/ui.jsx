@@ -1,13 +1,12 @@
-// Shared UI primitives — Verity design language. Dependency-free inline SVG icons.
+// Shared UI primitives - Vantage design language. Dependency-free inline SVG icons.
 // Colours come from the token layer in index.css: `-fill` tones sit behind white
 // text, plain tones are used as text/borders, so everything themes for free.
 import { useState } from 'react'
-import { useTheme } from '../context/ThemeContext'
 
 export const cx = (...a) => a.filter(Boolean).join(' ')
 
 export function Money({ value, className = '', signed = false }) {
-  if (value == null) return <span className={cx('text-faint', className)}>—</span>
+  if (value == null) return <span className={cx('text-faint', className)}>-</span>
   const neg = value < 0
   return (
     <span className={cx('tnum font-semibold', neg && 'text-danger', className)}>
@@ -16,20 +15,12 @@ export function Money({ value, className = '', signed = false }) {
   )
 }
 
-// Mix a hex colour toward white — keeps persona tints legible on dark surfaces.
-function lighten(hex, amt) {
-  const h = hex.replace('#', '')
-  const n = parseInt(h.length === 3 ? h.split('').map((c) => c + c).join('') : h, 16)
-  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255
-  const m = (c) => Math.round(c + (255 - c) * amt)
-  return `rgb(${m(r)}, ${m(g)}, ${m(b)})`
-}
-
 export function Avatar({ user, size = 28, ring = false }) {
-  const { isDark } = useTheme()
+  // The persona tint at full strength for the initials, at 12% behind them -
+  // legible on the warm stock this direction prints on.
   const base = user?.tint || '#4f46e5'
-  const fg = isDark ? lighten(base, 0.45) : base
-  const bg = isDark ? base + '38' : base + '1f'
+  const fg = base
+  const bg = base + '1f'
   return (
     <span
       className={cx('inline-grid shrink-0 place-items-center rounded-full font-display font-bold', ring && 'ring-2 ring-surface')}
@@ -55,7 +46,7 @@ export function Tag({ tone = 'muted', children, className = '', dot = false }) {
 }
 
 export function Card({ children, className = '', hover = false, accent, ...rest }) {
-  // No lift on hover — nothing floats in this direction. The rule darkens instead.
+  // No lift on hover - nothing floats in this direction. The rule darkens instead.
   return (
     <div className={cx('relative rounded-xl2 border border-line bg-surface',
       hover && 'transition-colors hover:border-accent/50', className)} {...rest}>
@@ -84,9 +75,12 @@ export function Btn({ variant = 'default', size = 'md', className = '', children
   )
 }
 
-export function Tooltip({ label, children, side = 'top' }) {
+// `className` exists for one real case: an inline-flex wrapper shrink-wraps its
+// child, so a full-width trigger (a collapsed nav item) needs to opt into
+// filling its parent instead.
+export function Tooltip({ label, children, side = 'top', className = '' }) {
   const [open, setOpen] = useState(false)
-  // `*-end` variants anchor to the trigger's right edge instead of centring —
+  // `*-end` variants anchor to the trigger's right edge instead of centring -
   // needed near the viewport edge, where a centred tooltip would overflow.
   const pos = {
     top: 'bottom-full left-1/2 mb-1.5 -translate-x-1/2',
@@ -95,7 +89,7 @@ export function Tooltip({ label, children, side = 'top' }) {
     right: 'left-full top-1/2 ml-2 -translate-y-1/2',
   }[side] || 'bottom-full left-1/2 mb-1.5 -translate-x-1/2'
   return (
-    <span className="relative inline-flex" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+    <span className={cx('relative inline-flex', className)} onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
       {children}
       {open && label && (
         <span className={cx('pointer-events-none absolute z-50 w-max max-w-[240px] rounded-lg bg-inverse px-2.5 py-1.5 text-micro font-medium leading-snug text-inverse-fg shadow-e3', pos)}>
@@ -103,6 +97,20 @@ export function Tooltip({ label, children, side = 'top' }) {
         </span>
       )}
     </span>
+  )
+}
+
+// A quiet ⓘ for the places where a taxpayer predictably gets stuck. Built on
+// Tooltip rather than as a second mechanism, and used sparingly - a screen
+// speckled with these is a screen whose labels aren't doing their job.
+export function InfoTip({ label, side = 'top', className = '' }) {
+  return (
+    <Tooltip label={label} side={side}>
+      <span tabIndex={0} role="note" aria-label={label}
+        className={cx('inline-grid h-4 w-4 cursor-help place-items-center rounded-full border border-line text-[9px] font-bold leading-none text-muted transition hover:border-accent hover:text-accent focus:border-accent focus:text-accent focus:outline-none', className)}>
+        i
+      </span>
+    </Tooltip>
   )
 }
 
@@ -193,8 +201,6 @@ export function Icon({ name, size = 16, className = '' }) {
     case 'life-buoy': return <svg {...p}><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="4" /><path d="m5.6 5.6 3.2 3.2M15.2 15.2l3.2 3.2M18.4 5.6l-3.2 3.2M8.8 15.2l-3.2 3.2" /></svg>
     case 'mail': return <svg {...p}><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3.5 7 8.5 6 8.5-6" /></svg>
     case 'phone': return <svg {...p}><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z" /></svg>
-    case 'moon': return <svg {...p}><path d="M20 13.5A8 8 0 1 1 10.5 4a6.5 6.5 0 0 0 9.5 9.5z" /></svg>
-    case 'sun': return <svg {...p}><circle cx="12" cy="12" r="4" /><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4" /></svg>
     case 'logout': return <svg {...p}><path d="M15 4h3a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3" /><path d="M10 16l-4-4 4-4" /><path d="M6 12h9" /></svg>
     case 'switch': return <svg {...p}><path d="M4 8h13l-3-3" /><path d="M20 16H7l3 3" /></svg>
     case 'columns': return <svg {...p}><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M12 4v16" /></svg>
@@ -207,6 +213,9 @@ export function Icon({ name, size = 16, className = '' }) {
     case 'globe': return <svg {...p}><circle cx="12" cy="12" r="9" /><path d="M3 12h18" /><path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z" /></svg>
     case 'key': return <svg {...p}><circle cx="8" cy="14" r="4" /><path d="m11 11 9-9" /><path d="m17 4 2 2M14.5 6.5l2 2" /></svg>
     case 'history': return <svg {...p}><path d="M4 12a8 8 0 1 0 2.5-5.8L4 8.5" /><path d="M4 4v5h5" /><path d="M12 8v4.5l3 1.5" /></svg>
+    case 'send': return <svg {...p}><path d="M4 12h15" /><path d="m13 6 6 6-6 6" /><path d="M4 7v10" /></svg>
+    case 'stop': return <svg {...p}><rect x="6" y="6" width="12" height="12" rx="1.5" /></svg>
+    case 'refresh': return <svg {...p}><path d="M20 12a8 8 0 1 1-2.5-5.8L20 8.5" /><path d="M20 4v5h-5" /></svg>
     default: return <svg {...p}><circle cx="12" cy="12" r="9" /></svg>
   }
 }

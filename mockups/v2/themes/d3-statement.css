@@ -1,6 +1,6 @@
-/* D3 · STATEMENT — Trust & Authority + Soft UI Evolution
+/* D3 · STATEMENT - Trust & Authority + Soft UI Evolution
    Navy and premium gold on warm stock. Generous spacing, large figures, and a
-   seal-and-hairline treatment where the app currently uses a plain check —
+   seal-and-hairline treatment where the app currently uses a plain check -
    verification is the product's central claim, so it should feel earned. */
 :root {
   --bg: #F2EFE8; --surface: #FAF8F3; --surface2: #F1EDE3;
@@ -30,7 +30,7 @@
   --card-sh: var(--sh1);
 }
 
-/* gold is a reward, not a decoration — it appears only on money and proof */
+/* gold is a reward, not a decoration - it appears only on money and proof */
 .fact-refund .fact-v, .stat-v { color: #8A6A1F; }
 .ret-client, .dash-title { font-weight: 600; }
 .brand-mark { background: linear-gradient(140deg, #1B2A4A, #33456F); }

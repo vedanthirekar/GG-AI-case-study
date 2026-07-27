@@ -1,5 +1,5 @@
 // Faux source document with highlightable regions (Challenge 01).
-// No real OCR — each mock doc carries a list of "boxes". When a return field is
+// No real OCR - each mock doc carries a list of "boxes". When a return field is
 // selected, the box it was extracted from is highlighted and the viewer jumps to
 // the page it lives on, giving a real "this number came from exactly here"
 // experience. Page navigation and zoom exist because a reviewer checking a
@@ -88,7 +88,7 @@ export default function SourceDocViewer({ doc, highlightBox, tall = false }) {
           style={{ transform: `scale(${zoom})`, marginBottom: zoom > 1 ? `${(zoom - 1) * 300}px` : 0 }}>
           <div className="mb-3 flex items-center justify-between">
             <span className="rounded bg-inverse px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-inverse-fg">{doc.type}</span>
-            <span className="text-micro text-faint">{doc.issuer && doc.issuer !== '—' ? `${doc.issuer} · ` : ''}Tax year 2025 · sample</span>
+            <span className="text-micro text-faint">{doc.issuer && doc.issuer !== '-' ? `${doc.issuer} · ` : ''}Tax year 2025 · sample</span>
           </div>
 
           {onPage.length > 0 ? onPage.map((b) => {
@@ -108,7 +108,7 @@ export default function SourceDocViewer({ doc, highlightBox, tall = false }) {
           }) : (
             <div className="py-10 text-center text-micro text-faint">
               {boxes.length === 0
-                ? 'Document preview — parsed regions were not fabricated for this sample.'
+                ? 'Document preview - parsed regions were not fabricated for this sample.'
                 : matched
                   ? `Nothing extracted from page ${page}. The matched value is on page ${pageOf(matched)}.`
                   : `Nothing extracted from page ${page}.`}

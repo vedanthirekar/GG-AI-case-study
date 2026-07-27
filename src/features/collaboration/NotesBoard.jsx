@@ -1,12 +1,12 @@
 // Shared notes (Challenge 02).
 // Threads are for conversations that need an owner and a resolution. A lot of
-// what actually passes between a client and a firm isn't that — it's "heads up",
+// what actually passes between a client and a firm isn't that - it's "heads up",
 // "don't forget", "waiting on X". Without a home, that lands in email and is
 // lost. So the return carries a rough tracker any party can write on:
 //   · every note says who wrote it and in what capacity
 //   · notes can be pinned to a specific line or document
 //   · they tick off when handled, so the board self-clears
-//   · visibility is explicit — Everyone, or Firm only (never sent to a client)
+//   · visibility is explicit - Everyone, or Firm only (never sent to a client)
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -65,7 +65,7 @@ export default function NotesBoard({ ret }) {
       {/* composer */}
       <Card className="mt-4 p-3" data-tour="notes-composer">
         <textarea value={draft} onChange={(e) => setDraft(e.target.value)} rows={2}
-          placeholder={caps.isClient ? 'Add a note for your preparer…' : 'Add a note — anyone on this return will see it…'}
+          placeholder={caps.isClient ? 'Add a note for your preparer…' : 'Add a note - anyone on this return will see it…'}
           className={cx('w-full resize-none rounded-lg border p-2.5 text-body outline-none transition placeholder:text-faint focus:border-accent',
             firmOnly ? 'border-warn/40 bg-warn-soft/40' : 'border-line bg-surface')} />
 
@@ -101,7 +101,7 @@ export default function NotesBoard({ ret }) {
       <div className="mt-5 space-y-2">
         {open.length === 0 && (
           <EmptyState icon="note" title="Nothing outstanding"
-            body={caps.isClient ? 'When your preparer jots something down for you, it shows up here.' : 'Add the first note — it beats an email thread nobody can find later.'} />
+            body={caps.isClient ? 'When your preparer jots something down for you, it shows up here.' : 'Add the first note - it beats an email thread nobody can find later.'} />
         )}
         <AnimatePresence initial={false}>
           {open.map((n) => <NoteRow key={n.id} n={n} ret={ret} onToggle={() => toggleNote(n.id)} />)}

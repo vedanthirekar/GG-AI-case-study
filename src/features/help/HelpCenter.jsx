@@ -1,8 +1,8 @@
 // Help & guides (Challenges 03 & 09).
 // A product this deep needs a place that answers "where do I start?" and "what
 // does this mean?" without anyone having to ask a human. The content is
-// role-aware — a first-time taxpayer and a reviewer get different starting
-// points from the same screen — and the reference sections pull the *live*
+// role-aware - a first-time taxpayer and a reviewer get different starting
+// points from the same screen - and the reference sections pull the *live*
 // vocabulary (affordance states, lifecycle stages) rather than describing it
 // twice and letting the two drift apart.
 import { useEffect, useMemo, useState } from 'react'
@@ -12,6 +12,7 @@ import { START_HERE, FAQ, GUIDES, SUPPORT, forAudience } from '../../data/help'
 import { STAGES } from '../../data/catalog'
 import { useSession } from '../../context/SessionContext'
 import { useChrome } from '../../context/ChromeContext'
+import { useAssistant } from '../../context/AssistantContext'
 import { AffordanceLegend } from '../../components/affordances/StateBadge'
 import PageHeader from '../../components/shell/PageHeader'
 import { Card, Btn, Icon, Tag, EmptyState, Kbd, cx } from '../../components/ui'
@@ -19,7 +20,7 @@ import { Card, Btn, Icon, Tag, EmptyState, Kbd, cx } from '../../components/ui'
 const SECTIONS = [
   { key: 'start', label: 'Start here', icon: 'compass' },
   { key: 'faq', label: 'Questions', icon: 'help' },
-  { key: 'guides', label: 'How Verity works', icon: 'book' },
+  { key: 'guides', label: 'How Vantage works', icon: 'book' },
   { key: 'interaction-system', label: 'Reading the interface', icon: 'grid' },
   { key: 'support', label: 'Contact support', icon: 'life-buoy' },
 ]
@@ -28,6 +29,7 @@ export default function HelpCenter() {
   const { section = 'start' } = useParams()
   const { isFirm, user } = useSession()
   const { publish } = useChrome()
+  const { openAsk } = useAssistant()
   const navigate = useNavigate()
   const [q, setQ] = useState('')
 
@@ -47,13 +49,13 @@ export default function HelpCenter() {
       <PageHeader eyebrow="Help & guides" icon="life-buoy"
         title={`How can we help, ${user?.name.split(' ')[0]}?`}
         subtitle={isFirm
-          ? 'Working guidance for firm staff — reviewing, the AI, permissions and collaboration.'
+          ? 'Working guidance for firm staff - reviewing, the AI, permissions and collaboration.'
           : 'Everything about your return, in plain language. No tax jargon unless we explain it.'} />
 
-      {/* search sits above the sections — it's the fastest path for most people */}
+      {/* search sits above the sections - it's the fastest path for most people */}
       <div className="relative mt-5">
         <Icon name="search" size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-faint" />
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search help — try “status”, “refund”, “locked”…"
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search help - try “status”, “refund”, “locked”…"
           className="w-full rounded-xl2 border border-line bg-surface py-3 pl-10 pr-4 text-lead outline-none transition placeholder:text-faint focus:border-accent focus:shadow-glow" />
         {q && (
           <button onClick={() => setQ('')} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-faint hover:text-ink"><Icon name="x" size={15} /></button>
@@ -62,12 +64,25 @@ export default function HelpCenter() {
 
       {results ? (
         <div className="mt-5">
-          <div className="mb-2 text-micro font-bold uppercase tracking-wider text-faint">
-            {results.length} result{results.length === 1 ? '' : 's'} for “{q}”
+          <div className="mb-2 flex items-center gap-3 text-micro font-bold uppercase tracking-wider text-faint">
+            <span>{results.length} result{results.length === 1 ? '' : 's'} for “{q}”</span>
+            {/* A curated FAQ can only answer what someone anticipated. Handing
+                the unmatched query to the assistant is the whole point of
+                having both. */}
+            <button onClick={() => openAsk(q)}
+              className="ml-auto inline-flex items-center gap-1 normal-case tracking-normal text-ai transition hover:underline">
+              <Icon name="sparkle" size={12} /> Ask Vantage this instead
+            </button>
           </div>
           {results.length === 0
-            ? <EmptyState icon="search" title="No matches" body="Try a different word, or contact support below."
-                action={<Btn variant="default" onClick={() => { setQ(''); navigate('/help/support') }}>Contact support</Btn>} />
+            ? <EmptyState icon="search" title="No matches"
+                body="Nothing in the written guides covers that. Vantage Assist can answer from your actual role and return."
+                action={
+                  <div className="flex flex-wrap justify-center gap-2">
+                    <Btn variant="primary" onClick={() => openAsk(q)}><Icon name="sparkle" size={13} /> Ask Vantage</Btn>
+                    <Btn variant="default" onClick={() => { setQ(''); navigate('/help/support') }}>Contact support</Btn>
+                  </div>
+                } />
             : <div className="space-y-2">{results.map((f) => <FaqItem key={f.id} f={f} defaultOpen />)}</div>}
         </div>
       ) : (
@@ -99,6 +114,7 @@ export default function HelpCenter() {
 // ---------- Start here -------------------------------------------------------
 function StartHere({ isFirm }) {
   const cards = START_HERE[isFirm ? 'firm' : 'client']
+  const { openAsk } = useAssistant()
   return (
     <>
       <div className="grid gap-3 sm:grid-cols-3">
@@ -129,13 +145,28 @@ function StartHere({ isFirm }) {
         </div>
       </Card>
 
-      <div className="mt-4 rounded-xl2 border border-accent/25 bg-accent-soft/50 p-4">
-        <div className="flex items-center gap-2 text-body font-semibold text-accent">
-          <Icon name="route" size={15} /> Prefer to be shown around?
+      {/* Three ways to be helped, in ascending order of specificity: read it,
+          be shown it, or ask about your own situation. */}
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <div className="rounded-xl2 border border-accent/25 bg-accent-soft/50 p-4">
+          <div className="flex items-center gap-2 text-body font-semibold text-accent">
+            <Icon name="route" size={15} /> Prefer to be shown around?
+          </div>
+          <p className="mt-1 text-body text-muted">
+            Take a tour from the top bar - it drives the real product through everything it does, in order.
+          </p>
         </div>
-        <p className="mt-1 text-body text-muted">
-          Take a tour from the top bar — it drives the real product through everything it does, in order.
-        </p>
+
+        <button onClick={() => openAsk('')}
+          className="rounded-xl2 border border-ai/25 bg-ai-soft/40 p-4 text-left transition hover:border-ai/60">
+          <div className="flex items-center gap-2 text-body font-semibold text-ai">
+            <Icon name="sparkle" size={15} /> Got a question these don’t cover?
+          </div>
+          <p className="mt-1 text-body text-muted">
+            Ask Vantage Assist. It reads your role, your permissions and the return in front of
+            you - and cites the guide it drew on.
+          </p>
+        </button>
       </div>
     </>
   )
@@ -223,7 +254,7 @@ function Guides({ isFirm }) {
           ))}
         </Card>
         <p className="mt-2 text-micro text-faint">
-          One vocabulary, two audiences — the same underlying stage, worded for whoever is reading it.
+          One vocabulary, two audiences - the same underlying stage, worded for whoever is reading it.
         </p>
       </div>
     </>
@@ -235,7 +266,7 @@ function InteractionSystem() {
   return (
     <>
       <p className="text-body leading-relaxed text-muted">
-        Every value in Verity carries one of six states, shown identically on every screen — so you
+        Every value in Vantage carries one of six states, shown identically on every screen - so you
         always know what you can touch, and why you can't touch the rest.
       </p>
       <div className="mt-4"><AffordanceLegend /></div>
@@ -244,7 +275,7 @@ function InteractionSystem() {
         <p className="mt-1 text-body leading-relaxed text-muted">
           When your role can't do something, the control stays on screen and explains itself rather than
           disappearing. Hiding it would leave you with a different mental model of the product than your
-          colleague has — and no way to discover what you'd need in order to proceed.
+          colleague has - and no way to discover what you'd need in order to proceed.
         </p>
       </Card>
     </>
@@ -275,7 +306,7 @@ function Support({ isFirm }) {
         <p className="mt-0.5 text-body text-muted">Tell us what happened and we'll pick it up from here.</p>
         {sent ? (
           <div className="mt-3 flex items-center gap-2 rounded-xl2 border border-good/30 bg-good-soft px-4 py-3 text-body font-medium text-good">
-            <Icon name="check" size={16} /> Thanks — reference <b className="font-mono">VT-{Math.floor(Math.random() * 9000) + 1000}</b>. We'll be in touch within one working day.
+            <Icon name="check" size={16} /> Thanks - reference <b className="font-mono">VT-{Math.floor(Math.random() * 9000) + 1000}</b>. We'll be in touch within one working day.
           </div>
         ) : (
           <form className="mt-3 space-y-2.5" onSubmit={(e) => { e.preventDefault(); setSent(true) }}>

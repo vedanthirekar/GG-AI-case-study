@@ -1,8 +1,8 @@
-// Source Document Traceability (Challenge 01) — the flagship review screen, live.
+// Source Document Traceability (Challenge 01) - the flagship review screen, live.
 //
 // Two layouts, because reviewers work two different ways:
-//   · Trace       — the return beside the full evidence chain, doc included.
-//   · Side by side — the return, the source document at full height, and the
+//   · Trace       - the return beside the full evidence chain, doc included.
+//   · Side by side - the return, the source document at full height, and the
 //                    trace/AI panel: checking a figure against the form without
 //                    either one being reduced to a thumbnail.
 // The choice lives in the URL (?view=split) so a shared link opens the way you
@@ -18,7 +18,8 @@ import { useSession } from '../../context/SessionContext'
 import StateBadge from '../../components/affordances/StateBadge'
 import SourceDocViewer from './SourceDocViewer'
 import AIRecommendationCard from '../../components/ai/AIRecommendationCard'
-import { Money, Icon, Btn, Kbd, Tooltip, cx } from '../../components/ui'
+import { Money, Icon, Btn, Kbd, Tooltip, InfoTip, cx } from '../../components/ui'
+import { CLIENT_TIPS } from '../../data/help'
 
 export default function ReturnReview({ ret, selectedId, onSelect, view = 'trace', onView }) {
   const rid = ret.id
@@ -65,16 +66,20 @@ export default function ReturnReview({ ret, selectedId, onSelect, view = 'trace'
     <div className={cx('grid h-full grid-cols-1',
       split ? 'xl:grid-cols-[minmax(320px,.85fr)_1.15fr_1fr]' : 'lg:grid-cols-[1.05fr_1fr]')}>
 
-      {/* ---------- LEFT — the return ---------- */}
+      {/* ---------- LEFT - the return ---------- */}
       <div data-tour="field-list" className="pane overflow-auto border-r border-line bg-surface">
         <div className="sticky top-0 z-10 border-b border-line2 bg-surface/95 px-5 py-3 backdrop-blur">
           <div className="flex items-start justify-between gap-2">
+            {/* The workspace header directly above already carries the client
+                name and the form, and the active tab already says "Review".
+                Repeating both here was three labels for one fact. */}
             <div className="min-w-0">
-              <div className="text-micro font-semibold uppercase tracking-wide text-faint">Return review</div>
-              <div className="truncate font-display text-lead font-bold">{ret.form} — {ret.clientName}</div>
-              <div className="text-meta text-muted">
-                {verified}/{fields.length} verified ·{' '}
-                <span className="text-warn">{reviewFields.length} need review</span>
+              <div className="flex items-center gap-1.5 text-meta text-muted">
+                <span>
+                  {verified}/{fields.length} verified ·{' '}
+                  <span className="text-warn">{reviewFields.length} need review</span>
+                </span>
+                {caps.isClient && <InfoTip label={CLIENT_TIPS.readonly} side="bottom" />}
               </div>
             </div>
             {reviewFields.length > 0 && (
@@ -85,7 +90,7 @@ export default function ReturnReview({ ret, selectedId, onSelect, view = 'trace'
             )}
           </div>
 
-          {/* layout switch — the "side-by-side" the reviewer actually wants */}
+          {/* layout switch - the "side-by-side" the reviewer actually wants */}
           <div className="mt-2.5 flex items-center gap-1.5" data-tour="view-toggle">
             <span className="shrink-0 text-micro font-semibold text-faint">View</span>
             <div className="flex rounded-lg border border-line bg-surface p-0.5 text-micro font-semibold">
@@ -122,7 +127,7 @@ export default function ReturnReview({ ret, selectedId, onSelect, view = 'trace'
                     <span className="flex items-center gap-1.5">
                       <span className="truncate text-body font-medium">{f.label}</span>
                       {f.prior != null && f.prior !== f.amount && Math.abs((f.amount - f.prior) / (f.prior || 1)) >= 0.4 && (
-                        <Tooltip label={`Prior year: $${f.prior.toLocaleString()} — a large change worth checking`}>
+                        <Tooltip label={`Prior year: $${f.prior.toLocaleString()} - a large change worth checking`}>
                           <Icon name="trending" size={12} className="shrink-0 text-warn" />
                         </Tooltip>
                       )}
@@ -132,7 +137,7 @@ export default function ReturnReview({ ret, selectedId, onSelect, view = 'trace'
                     </span>
                     <span className="block truncate text-micro text-muted">{f.sourceLocation || f.transform || 'Manual entry'}</span>
                   </span>
-                  {/* value first, then how much you can trust it — stacked so the
+                  {/* value first, then how much you can trust it - stacked so the
                       label keeps its width even in the narrow side-by-side column */}
                   <span className="flex flex-col items-end gap-1">
                     <Money value={f.amount} className="text-body" />
@@ -145,16 +150,13 @@ export default function ReturnReview({ ret, selectedId, onSelect, view = 'trace'
         </div>
       </div>
 
-      {/* ---------- MIDDLE (split only) — the source document, full height ---------- */}
+      {/* ---------- MIDDLE (split only) - the source document, full height ---------- */}
       {split && (
         <div className="pane hidden min-h-0 flex-col border-r border-line bg-bgtint/30 p-3 xl:flex" data-tour="doc-pane">
+          {/* No location chip here: the trace chain names the box, and the
+              document below highlights it. Three statements of one location. */}
           <div className="mb-2 flex items-center gap-1.5 px-1 text-micro font-semibold uppercase tracking-wide text-faint">
             <Icon name="doc" size={12} /> Source document
-            {selected.sourceLocation && (
-              <span className="ml-auto flex items-center gap-1 rounded-full bg-accent-soft px-2 py-0.5 font-semibold normal-case tracking-normal text-accent">
-                <Icon name="compass" size={10} /> {selected.sourceLocation}
-              </span>
-            )}
           </div>
           <div className="min-h-0 flex-1">
             <SourceDocViewer doc={sourceDoc} highlightBox={selected.sourceBox} tall />
@@ -162,7 +164,7 @@ export default function ReturnReview({ ret, selectedId, onSelect, view = 'trace'
         </div>
       )}
 
-      {/* ---------- RIGHT — traceability for the selected field ---------- */}
+      {/* ---------- RIGHT - traceability for the selected field ---------- */}
       <div data-tour="trace-panel" className="pane overflow-auto bg-bgtint/30">
         <div className="border-b border-line2 bg-bgtint/40 px-5 py-3">
           <div className="text-micro font-semibold uppercase tracking-wide text-faint">Traceability · Line {selected.line}</div>

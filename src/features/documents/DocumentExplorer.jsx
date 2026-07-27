@@ -4,6 +4,7 @@
 // hierarchy (progressive disclosure), a compact summary list, and a detail view
 // that keeps the list context beside it. Also reused as a return's Documents tab.
 import { useMemo, useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { documents, returnById, docsForReturn } from '../../data/db'
 import { DOC_CATEGORIES, DOC_STATUS } from '../../data/catalog'
 import { useSession } from '../../context/SessionContext'
@@ -12,10 +13,11 @@ import { useChrome } from '../../context/ChromeContext'
 import SourceDocViewer from '../return/SourceDocViewer'
 import RelatedObjectsPanel from '../../components/shell/RelatedObjectsPanel'
 import IngestDocument from './IngestDocument'
-import { Card, Tag, Icon, Btn, EmptyState, Skeleton, cx } from '../../components/ui'
+import { Card, Tag, Icon, Btn, EmptyState, Skeleton, InfoTip, cx } from '../../components/ui'
+import { CLIENT_TIPS } from '../../data/help'
 import useSimulatedLoad from '../../lib/useSimulatedLoad'
 
-export default function DocumentExplorer({ scope, embeddedReturnId, onPickDoc, selectedDocId }) {
+export default function DocumentExplorer({ scope, embeddedReturnId, returnId, onPickDoc, selectedDocId }) {
   const { userId, caps } = useSession()
   const { getExtraDocs } = useStore()
   const { publish } = useChrome()
@@ -23,14 +25,16 @@ export default function DocumentExplorer({ scope, embeddedReturnId, onPickDoc, s
   const [ingesting, setIngesting] = useState(false)
   const extra = embedded ? getExtraDocs(embeddedReturnId) : []
 
-  // choose the corpus: a single return (embedded), a client's own docs, or firm-wide
+  // choose the corpus: a single return (embedded), one client's file (reached
+  // from the client list), a client's own docs, or firm-wide
   const corpus = useMemo(() => {
     if (embedded) return [...docsForReturn(embeddedReturnId), ...extra]
+    if (returnId) return [...docsForReturn(returnId), ...getExtraDocs(returnId)]
     if (scope === 'client' || caps.isClient) {
       return documents.filter((d) => returnById(d.returnId)?.clientId === userId)
     }
     return documents
-  }, [embedded, embeddedReturnId, scope, caps.isClient, userId, extra])
+  }, [embedded, embeddedReturnId, returnId, scope, caps.isClient, userId, extra, getExtraDocs])
 
   const [q, setQ] = useState('')
   const [cat, setCat] = useState('')
@@ -39,7 +43,15 @@ export default function DocumentExplorer({ scope, embeddedReturnId, onPickDoc, s
   const [localSel, setLocalSel] = useState(null)
   const selId = selectedDocId ?? localSel
 
-  useEffect(() => { if (!embedded) publish({ crumbs: [{ label: caps.isClient ? 'My documents' : 'Documents' }] }) }, [publish, embedded, caps.isClient])
+  useEffect(() => {
+    if (embedded) return
+    if (returnId) {
+      // Reached from the client list - the breadcrumb has to lead back to it.
+      publish({ crumbs: [{ label: 'Clients', to: '/documents' }, { label: returnById(returnId)?.clientName || 'Client' }] })
+      return
+    }
+    publish({ crumbs: [{ label: caps.isClient ? 'My documents' : 'Clients' }] })
+  }, [publish, embedded, returnId, caps.isClient])
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase()
@@ -65,8 +77,18 @@ export default function DocumentExplorer({ scope, embeddedReturnId, onPickDoc, s
       <div className="pane flex flex-col overflow-hidden border-r border-line bg-surface">
         <div className="border-b border-line2 p-4">
           {!embedded && <>
-            <div className="text-[11px] font-semibold uppercase tracking-wide text-faint">Documents</div>
-            <h1 className="text-[16px] font-bold">{caps.isClient ? 'My documents' : 'Document library'}</h1>
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-faint">
+              {returnId ? 'Client file' : 'Documents'}
+            </div>
+            <h1 className="flex items-center gap-1.5 text-[16px] font-bold">
+              {returnId ? (returnById(returnId)?.clientName || 'Client') : caps.isClient ? 'My documents' : 'Document library'}
+              {caps.isClient && !returnId && <InfoTip label={CLIENT_TIPS.documents} side="bottom" />}
+            </h1>
+            {returnId && (
+              <Link to="/documents" className="mt-1 inline-flex items-center gap-1 text-[12px] font-medium text-muted transition hover:text-accent">
+                <Icon name="back" size={12} /> All clients
+              </Link>
+            )}
           </>}
           <div data-tour="doc-search" className="mt-2 flex items-center gap-2 rounded-lg border border-line bg-bg px-2.5 py-1.5">
             <Icon name="search" size={15} className="text-faint" />
@@ -125,7 +147,7 @@ export default function DocumentExplorer({ scope, embeddedReturnId, onPickDoc, s
         </div>
       </div>
 
-      {/* detail — summary→detail while keeping the list beside it */}
+      {/* detail - summary→detail while keeping the list beside it */}
       <div className="pane overflow-auto bg-bg/40 p-5">
         {selected ? (
           <div className="mx-auto max-w-2xl space-y-4">

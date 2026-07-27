@@ -3,7 +3,7 @@
 import { cx } from '../ui'
 
 export function confidenceTone(c) {
-  if (c == null) return { key: 'none', label: '—', color: '#94a3b8', tone: 'muted' }
+  if (c == null) return { key: 'none', label: '-', color: '#94a3b8', tone: 'muted' }
   if (c >= 90) return { key: 'high', label: 'High confidence', color: '#16a34a', tone: 'good' }
   if (c >= 75) return { key: 'medium', label: 'Medium confidence', color: '#b45309', tone: 'warn' }
   return { key: 'low', label: 'Low confidence', color: '#dc2626', tone: 'danger' }

@@ -6,7 +6,8 @@
 import { STAGES, stageIndex } from '../../data/catalog'
 import { userById } from '../../data/db'
 import { useStore } from '../../context/StoreContext'
-import { Card, Tag, Icon, cx } from '../../components/ui'
+import { Card, Tag, Icon, InfoTip, cx } from '../../components/ui'
+import { CLIENT_TIPS } from '../../data/help'
 
 export default function StatusTracker({ ret, audience = 'staff' }) {
   const { summary } = useStore()
@@ -20,15 +21,21 @@ export default function StatusTracker({ ret, audience = 'staff' }) {
     <div className="space-y-4">
       {/* headline: where it is + who owns the next action */}
       <Card className="p-4">
-        <div className="flex flex-wrap items-center justify-between gap-2">
+        {/* Two facts read as a short list, both starting at the same left edge.
+            Pushing "Waiting on" to the right made it read as a separate widget
+            rather than the second half of the same sentence. */}
+        <div className="space-y-3">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-wide text-faint">Right now</div>
             <div className="mt-0.5 text-[15px] font-bold">
               {audience === 'client' ? STAGES[current].clientLabel : STAGES[current].staffLabel}
             </div>
           </div>
-          <div className="text-right">
-            <div className="text-[11px] font-semibold uppercase tracking-wide text-faint">Waiting on</div>
+          <div>
+            <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-faint">
+              Waiting on
+              {audience === 'client' && <InfoTip label={CLIENT_TIPS.waiting} side="bottom" />}
+            </div>
             <div className={cx('mt-0.5 text-[13px] font-semibold', owner.isYou ? 'text-accent' : 'text-ink')}>{owner.label}</div>
           </div>
         </div>
@@ -85,11 +92,11 @@ function ownerOf(ret) {
   if (i <= 1) return { label: ret.clientName, isYou: false }
   if (i === 3) return { label: userById(ret.reviewerId)?.name || 'Reviewer', isYou: false }
   if (i === 4) return { label: `${ret.clientName} (approval)`, isYou: false }
-  if (i === 5) return { label: 'Filed — no action', isYou: false }
+  if (i === 5) return { label: 'Filed - no action', isYou: false }
   return { label: userById(ret.preparerId)?.name || 'Preparer', isYou: true }
 }
 
 function clientBlock(ret) {
-  // plain-language version for clients — no internal jargon
+  // plain-language version for clients - no internal jargon
   return 'We need one more thing from you. Check your open requests in Messages.'
 }

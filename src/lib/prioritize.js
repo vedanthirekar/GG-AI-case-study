@@ -1,6 +1,6 @@
 // ============================================================================
 // Prioritization (Challenge 07).
-// Real ranking/filter logic over the mock dataset — this is genuinely wired up,
+// Real ranking/filter logic over the mock dataset - this is genuinely wired up,
 // not faked. It answers "what should I work on right now?" by scoring each task
 // on due date, blocking status, kind, and the stage of its return.
 // ============================================================================
@@ -8,7 +8,12 @@ import { returnById } from '../data/db'
 
 const KIND_WEIGHT = { review: 30, approval: 26, prep: 20, request: 16, question: 12 }
 
-export function daysUntil(dateStr, from = new Date('2026-07-24')) {
+// The dataset is seeded around a fixed "today" so due dates stay stable between
+// runs. Everything that talks about dates reads it from here, or the dashboard
+// would greet you with one date while the rows counted from another.
+export const TODAY = new Date('2026-07-24')
+
+export function daysUntil(dateStr, from = TODAY) {
   const d = new Date(dateStr)
   return Math.round((d - from) / 86400000)
 }
@@ -45,6 +50,25 @@ export function rankTasks(tasks, { assigneeId, kind, onlyBlocked } = {}) {
     .filter((t) => (onlyBlocked ? t.blocked : true))
     .map((t) => ({ ...t, score: scoreTask(t), band: urgencyBand(scoreTask(t)), dLeft: daysUntil(t.due) }))
     .sort((a, b) => b.score - a.score)
+}
+
+// Ordering the ranked list a different way, without a second scoring system.
+// `rankTasks` has already attached `score`, `band` and `dLeft`, so these are
+// pure re-orderings of the same data - which is what keeps the dashboard's
+// "why is this first?" answer consistent whichever sort is applied.
+const BAND_RANK = { critical: 0, high: 1, medium: 2, low: 3 }
+
+// 'priority' | 'due' | 'severity' - the dashboard's column headers select these.
+export function sortTasks(list, mode) {
+  const out = [...list]
+  if (mode === 'due') {
+    // Soonest first; overdue items are negative, so they lead naturally.
+    return out.sort((a, b) => a.dLeft - b.dLeft || b.score - a.score)
+  }
+  if (mode === 'severity') {
+    return out.sort((a, b) => BAND_RANK[a.band.key] - BAND_RANK[b.band.key] || b.score - a.score)
+  }
+  return out // 'priority' - already in score order from rankTasks
 }
 
 // Dashboard summary counters over any task list.

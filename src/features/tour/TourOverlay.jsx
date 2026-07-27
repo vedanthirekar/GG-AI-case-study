@@ -1,6 +1,6 @@
 // The tour's visual layer: dims the app, spotlights the target element, and
 // shows a coach card that navigates the app for each step.
-// It never changes who is signed in — the tour runs as you, through your own
+// It never changes who is signed in - the tour runs as you, through your own
 // work; which steps exist at all is decided by your role in TourContext.
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -14,7 +14,7 @@ export default function TourOverlay() {
   const [rect, setRect] = useState(null)
   const applied = useRef(-1) // which step index we've already navigated for
 
-  // drive the app for the current step: route — exactly once per step
+  // drive the app for the current step: route - exactly once per step
   useEffect(() => {
     if (!active || !step) { applied.current = -1; return }
     if (applied.current === index) return

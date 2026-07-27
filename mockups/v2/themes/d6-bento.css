@@ -1,7 +1,7 @@
-/* D6 · BENTO — Bento Box Grid (complexity Low, Performance Excellent)
+/* D6 · BENTO - Bento Box Grid (complexity Low, Performance Excellent)
    The most incremental of the six: keeps the existing indigo as the single
    accent and changes composition rather than palette. Unequal tiles let ten
-   capabilities read as one product at a glance — which is how a case-study
+   capabilities read as one product at a glance - which is how a case-study
    reviewer will actually skim the deliverable. The source document becomes the
    hero tile of the review screen. */
 :root {
@@ -56,7 +56,7 @@
 .stat:nth-child(3) .stat-v { color: var(--ai); }
 .stat:nth-child(4) .stat-v { color: var(--good); }
 
-/* soft, rounded, generous — the tile is the unit of meaning */
+/* soft, rounded, generous - the tile is the unit of meaning */
 .pane-head { padding: 13px var(--pad) 11px; }
 .badge { padding: 2px 9px; font-weight: 700; }
 .nav-item { border-radius: 10px; padding: 8px 11px; }

@@ -11,7 +11,7 @@
    diverge, which is what keeps contrast honest.
    =========================================================================== */
 @layer base {
-  /* D1 "Ledger" — warm stock, ink, and a single blue. Every accent colour is a
+  /* D1 "Ledger" - warm stock, ink, and a single blue. Every accent colour is a
      printer's ink rather than a screen colour: desaturated, high-contrast, and
      legible next to a figure. */
   :root {
@@ -53,7 +53,7 @@
     --c-danger-soft: 247 232 230;
     --c-danger-fill: 185 28 28;
 
-    /* dark chips, tooltips, coach cards — always light text on top */
+    /* dark chips, tooltips, coach cards - always light text on top */
     --c-inverse: 18 22 28;
     --c-inverse-fg: 251 251 249;
     --c-scrim: 18 22 28;
@@ -72,76 +72,17 @@
     --scrollbar: #cfccc0;
     --scrollbar-hover: #b9b5a6;
 
-    /* no radial glows — this direction is flat stock, not a lit surface */
+    /* no radial glows - this direction is flat stock, not a lit surface */
     --glow-1: transparent;
     --glow-2: transparent;
 
     color-scheme: light;
   }
 
-  /* Dark counterpart: the same ledger printed on dark stock. Warm-neutral rather
-     than blue-black, so it reads as paper turned down, not as a different app. */
-  .dark {
-    --c-bg: 20 20 19;
-    --c-bgtint: 25 25 23;
-    --c-surface: 28 28 26;
-    --c-surface2: 36 36 33;
-
-    --c-ink: 235 233 226;
-    --c-muted: 161 157 147;
-    --c-faint: 121 118 109;
-
-    --c-line: 59 58 53;
-    --c-line2: 44 43 39;
-    --c-slate-soft: 38 38 34;
-
-    --c-accent: 147 180 252;
-    --c-accent-deep: 191 210 254;
-    --c-accent-soft: 26 34 54;
-    --c-accent-fill: 29 78 216;
-
-    --c-good: 74 200 130;
-    --c-good-deep: 134 220 170;
-    --c-good-soft: 18 40 28;
-    --c-good-fill: 21 128 61;
-
-    --c-warn: 224 176 74;
-    --c-warn-deep: 240 205 130;
-    --c-warn-soft: 48 38 16;
-    --c-warn-fill: 133 77 14;
-
-    --c-ai: 165 158 245;
-    --c-ai-deep: 200 195 250;
-    --c-ai-soft: 34 32 62;
-    --c-ai-fill: 67 56 202;
-
-    --c-danger: 248 140 130;
-    --c-danger-deep: 252 180 172;
-    --c-danger-soft: 52 26 24;
-    --c-danger-fill: 153 27 27;
-
-    --c-inverse: 59 58 53;
-    --c-inverse-fg: 245 243 236;
-    --c-scrim: 8 8 7;
-
-    --grad-brand: linear-gradient(135deg, #2d5fd8 0%, #1e3a8a 100%);
-    --grad-brand-soft: linear-gradient(135deg, #1a2236 0%, #22203e 100%);
-    --paper: #201f1c;
-    --paper-rule: #302f2a;
-
-    --shadow-rgb: 0 0 0;
-    --shadow-a1: 0.3;
-    --shadow-a2: 0.35;
-    --shadow-a3: 0.6;
-
-    --scrollbar: #3d3c37;
-    --scrollbar-hover: #514f48;
-
-    --glow-1: transparent;
-    --glow-2: transparent;
-
-    color-scheme: dark;
-  }
+  /* There is deliberately no dark counterpart. A tax return is a printed
+     instrument and this direction commits to printed stock - one palette, set
+     once above. `color-scheme: light` on :root keeps form controls and
+     scrollbars in step even when the OS is dark. */
 
   html, body, #root { height: 100%; }
   body {
@@ -155,7 +96,7 @@
   }
   * { box-sizing: border-box; }
   ::selection { background: rgb(var(--c-accent) / .22); }
-  /* Newsreader is a serif — the negative tracking that suited Space Grotesk
+  /* Newsreader is a serif - the negative tracking that suited Space Grotesk
      closes it up. Let it set naturally, at the weight it was drawn for. */
   h1, h2, h3 { font-family: theme('fontFamily.display'); font-weight: 600; letter-spacing: 0; }
 }

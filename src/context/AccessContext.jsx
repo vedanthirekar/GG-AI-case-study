@@ -5,7 +5,7 @@
 // because SessionContext resolves a user's roles through this store, the change
 // is real: sign in as that person and the navigation, permissions and language
 // have actually changed.
-// In-memory only — no backend, no persistence.
+// In-memory only - no backend, no persistence.
 // ============================================================================
 import { createContext, useContext, useMemo, useState, useCallback } from 'react'
 import { users } from '../data/db'
@@ -30,13 +30,13 @@ export function AccessProvider({ children }) {
   const log = useCallback((entry) => setAudit((a) => [{ ...entry, at: Date.now() }, ...a].slice(0, 20)), [])
 
   // Returns { ok, reason } so the UI can explain a refusal instead of silently
-  // doing nothing — same "communicate the permission" principle as lib/roles.
+  // doing nothing - same "communicate the permission" principle as lib/roles.
   const setRole = useCallback((userId, role, on, actor) => {
     const current = grants[userId] || []
     if (on && current.includes(role)) return { ok: true }
     if (!on && !current.includes(role)) return { ok: true }
     if (!on && current.length === 1) {
-      return { ok: false, reason: 'Everyone needs at least one role — assign another before removing this one.' }
+      return { ok: false, reason: 'Everyone needs at least one role - assign another before removing this one.' }
     }
     if (!on && CAPS[role]?.isClient) {
       return { ok: false, reason: 'A taxpayer role comes from having a return in the system; it isn’t revoked here.' }

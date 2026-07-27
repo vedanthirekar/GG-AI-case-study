@@ -1,5 +1,5 @@
 // Global search (Challenges 04 & 09). Searches across returns, documents and
-// clients in the mock db and deep-links straight to the object — one of the ways
+// clients in the mock db and deep-links straight to the object - one of the ways
 // a user moves between connected objects without losing their place.
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'

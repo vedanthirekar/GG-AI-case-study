@@ -12,7 +12,10 @@ export const NAV = {
   firm: [
     { to: '/dashboard', label: 'Dashboard', icon: 'grid' },
     { to: '/returns', label: 'Returns', icon: 'folder' },
-    { to: '/documents', label: 'Documents', icon: 'doc' },
+    // The document library opens by client, so the rail says what you'll
+    // actually land on. Taxpayers still see "My documents" - for them there is
+    // only one file, and it's theirs.
+    { to: '/documents', label: 'Clients', icon: 'users' },
     { to: '/messages', label: 'Messages', icon: 'chat' },
   ],
   client: [
@@ -25,7 +28,7 @@ export const NAV = {
 
 // Per-role capability flags. Used to decide what is editable / visible.
 export const CAPS = {
-  preparer: { editFields: true, verifyFields: true, seeInternalNotes: true, approveFile: false, manageFirm: false, seeAllReturns: true, label: 'Can prepare & verify — a reviewer signs off before filing.' },
+  preparer: { editFields: true, verifyFields: true, seeInternalNotes: true, approveFile: false, manageFirm: false, seeAllReturns: true, label: 'Can prepare & verify - a reviewer signs off before filing.' },
   reviewer: { editFields: true, verifyFields: true, seeInternalNotes: true, approveFile: true, manageFirm: false, seeAllReturns: true, label: 'Can verify and approve returns for filing.' },
   admin: { editFields: false, verifyFields: false, seeInternalNotes: true, approveFile: false, manageFirm: true, seeAllReturns: true, label: 'Manages the firm; does not edit tax figures.' },
   seasonal: { editFields: true, verifyFields: false, seeInternalNotes: false, approveFile: false, manageFirm: false, seeAllReturns: false, label: 'Can prepare, but not verify or see internal notes. Sees only assigned returns.' },
@@ -33,12 +36,19 @@ export const CAPS = {
   business: { editFields: false, verifyFields: false, seeInternalNotes: false, approveFile: false, manageFirm: false, seeAllReturns: false, isClient: true, label: 'Sees only their business return; can answer questions and upload documents.' },
 }
 
-// Secondary nav — always present, below a divider. `needs` names the capability
-// required; the item is still SHOWN without it, just locked with an explanation,
-// which is the same "communicate, don't hide" rule the rest of the app follows.
+// Secondary nav, below a divider. `needs` names the capability required.
+//
+// The app's general rule is "communicate, don't hide": a control you can't use
+// stays visible and explains which role has it, so colleagues share one mental
+// model. That rule earns its keep for actions *inside* a screen you can already
+// reach. A whole section belonging to someone else's job is different - a
+// permanently locked destination in the rail is just clutter for the five roles
+// who will never open it. `hideWhenLocked` marks those.
 export const SECONDARY_NAV = [
   { to: '/help', label: 'Help & guides', icon: 'life-buoy' },
-  { to: '/people', label: 'People & access', icon: 'users', needs: 'manageFirm', firmOnly: true },
+  // 'key' rather than 'users': this is access management, and 'users' now
+  // belongs to the client list above.
+  { to: '/people', label: 'People & access', icon: 'key', needs: 'manageFirm', firmOnly: true, hideWhenLocked: true },
 ]
 
 export function navFor(roleKey) {
@@ -51,7 +61,7 @@ export function isFirmRole(roleKey) {
   return !CAPS[roleKey]?.isClient
 }
 
-// Human explanation of why something is locked for the current role — shown in
+// Human explanation of why something is locked for the current role - shown in
 // tooltips so permission is communicated, not just enforced.
 export function whyLocked(roleKey, capNeeded) {
   const map = {

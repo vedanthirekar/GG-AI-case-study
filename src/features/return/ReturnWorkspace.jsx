@@ -1,4 +1,4 @@
-// The return workspace — the hub that holds a single return together
+// The return workspace - the hub that holds a single return together
 // (Challenges 04 & 06 live here at the container level).
 // Tabs for Review / Documents / Status / Messages keep the user oriented; all
 // selection lives in the URL (?tab / ?field / ?doc / ?thread) so everything is

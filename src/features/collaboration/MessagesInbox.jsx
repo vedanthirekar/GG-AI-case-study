@@ -1,6 +1,6 @@
 // Cross-return message inbox (Challenge 02).
-// A single place to triage conversations that need YOU — grouped by who owns the
-// next action — while every item still deep-links back to its contextual thread
+// A single place to triage conversations that need YOU - grouped by who owns the
+// next action - while every item still deep-links back to its contextual thread
 // inside the return (so it never becomes "just another generic inbox").
 import { useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
@@ -35,7 +35,7 @@ export default function MessagesInbox() {
     <div className="mx-auto max-w-3xl px-5 py-6">
       <div className="text-[12px] font-semibold uppercase tracking-wide text-accent">Messages</div>
       <h1 className="mt-0.5 text-xl font-bold tracking-tight">Conversations</h1>
-      <p className="text-[13px] text-muted">Every thread is tied to a document or a specific line — click through to its context.</p>
+      <p className="text-[13px] text-muted">Every thread is tied to a document or a specific line - click through to its context.</p>
 
       <Section title={`Needs you (${needsYou.length})`} tone="warn" items={needsYou} />
       <Section title={`Waiting on others (${waiting.length})`} tone="muted" items={waiting} />

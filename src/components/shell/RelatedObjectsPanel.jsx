@@ -1,6 +1,6 @@
 // "Related" rail (Challenge 04). Given the object a user is currently looking at,
 // it shows every connected object (source doc ↔ field ↔ thread ↔ return) and lets
-// them jump across the workflow — then get back — without losing context.
+// them jump across the workflow - then get back - without losing context.
 import { Link } from 'react-router-dom'
 import { relatedTo, KIND_ICON } from '../../lib/relationships'
 import { Icon } from '../ui'

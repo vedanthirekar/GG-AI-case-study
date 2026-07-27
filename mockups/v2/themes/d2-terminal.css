@@ -1,4 +1,4 @@
-/* D2 · TERMINAL — Data-Dense Dashboard, dark-first (Performance Excellent)
+/* D2 · TERMINAL - Data-Dense Dashboard, dark-first (Performance Excellent)
    Built for the preparer running sixty returns a week. 30px rows, 8px gaps,
    mono figures everywhere, keyboard affordances shown inline. Highest
    information density of the six. */
@@ -29,7 +29,7 @@
   --card-sh: none;
 }
 
-/* every heading is monospaced — this is a terminal, not a brochure */
+/* every heading is monospaced - this is a terminal, not a brochure */
 .ret-client, .dash-title, .pane-head h2, .stat-v { font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .02em; }
 .stat-v { font-size: 22px; }
 .dash-sub { max-width: 74ch; }
@@ -43,7 +43,7 @@
 .queue-head { min-height: 26px; }
 .stat { padding: 9px var(--pad); }
 
-/* badges reduce to a coloured token — the label is redundant at this density */
+/* badges reduce to a coloured token - the label is redundant at this density */
 .badge { padding: 0 5px; border-radius: 2px; }
 .badge-txt { display: none; }
 .badge-conf { opacity: 1; }

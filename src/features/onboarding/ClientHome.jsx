@@ -9,7 +9,8 @@ import { db, returnsForClient, threadsForReturn } from '../../data/db'
 import { useSession } from '../../context/SessionContext'
 import { useStore } from '../../context/StoreContext'
 import { useChrome } from '../../context/ChromeContext'
-import { Card, Btn, Tag, Icon, cx } from '../../components/ui'
+import { Card, Btn, Tag, Icon, InfoTip, Money, cx } from '../../components/ui'
+import { CLIENT_TIPS } from '../../data/help'
 import IngestDocument from '../documents/IngestDocument'
 import StatusTracker from '../status/StatusTracker'
 import StageChip from '../status/StageChip'
@@ -48,7 +49,7 @@ function FirstRun({ user, ret }) {
       {/* hero: your next action, unmissable */}
       <div data-tour="onboarding-hero" className="rounded-xl3 border border-accent/25 bg-gradient-to-br from-accent-soft via-surface to-surface p-5 shadow-soft">
         <div className="flex items-center gap-2 text-[12px] font-semibold text-accent">
-          <Icon name="sparkle" size={14} /> Welcome to Verity, {user.name.split(' ')[0]} 👋
+          <Icon name="sparkle" size={14} /> Welcome to Vantage, {user.name.split(' ')[0]} 👋
         </div>
         <h1 className="mt-1.5 text-[20px] font-bold tracking-tight">Let’s get your 2025 taxes started</h1>
         {next ? (
@@ -64,7 +65,7 @@ function FirstRun({ user, ret }) {
             </div>
           </>
         ) : (
-          <p className="mt-2 text-[14px] font-medium text-good">🎉 All set — we have everything we need to begin.</p>
+          <p className="mt-2 text-[14px] font-medium text-good">🎉 All set - we have everything we need to begin.</p>
         )}
         {/* progress */}
         <div className="mt-4">
@@ -75,7 +76,7 @@ function FirstRun({ user, ret }) {
         </div>
       </div>
 
-      {/* the checklist — hidden complexity revealed step by step */}
+      {/* the checklist - hidden complexity revealed step by step */}
       <div className="mt-5">
         <div className="mb-2 text-[11px] font-bold uppercase tracking-wider text-faint">Your setup checklist</div>
         <Card className="divide-y divide-line2 overflow-hidden">
@@ -99,7 +100,7 @@ function FirstRun({ user, ret }) {
         </div>
       )}
 
-      <p className="mt-6 text-center text-[11px] text-faint">Everything else — your full return, past documents, detailed status — stays tucked away until it’s relevant.</p>
+      <p className="mt-6 text-center text-[11px] text-faint">Everything else - your full return, past documents, detailed status - stays tucked away until it’s relevant.</p>
     </div>
   )
 }
@@ -134,19 +135,33 @@ function ReturningHome({ user, ret }) {
   const openRequests = threadsForReturn(ret.id).filter((t) => t.request && !t.request.fulfilled)
   return (
     <div className="mx-auto max-w-3xl px-5 py-6">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
           <div className="text-[12px] font-semibold uppercase tracking-wide text-good">Welcome back</div>
-          <h1 className="text-xl font-bold tracking-tight">Hi {user.name.split(' ')[0]} — here’s your {ret.year} return</h1>
+          <h1 className="text-xl font-bold tracking-tight">Hi {user.name.split(' ')[0]} - here’s your {ret.year} return</h1>
         </div>
-        <StageChip stageKey={ret.stage} audience="client" />
+        <div className="flex shrink-0 flex-col items-end gap-1.5">
+          <span className="flex items-center gap-1.5">
+            <StageChip stageKey={ret.stage} audience="client" />
+            <InfoTip label={CLIENT_TIPS.stage} side="bottom-end" />
+          </span>
+          {ret.refund != null && (
+            <span className="flex items-center gap-1.5 text-meta text-muted">
+              Estimated refund <Money value={ret.refund} className="text-good" />
+              <InfoTip label={CLIENT_TIPS.refund} side="bottom-end" />
+            </span>
+          )}
+        </div>
       </div>
 
       {/* what needs the client, first */}
       <div data-tour="client-home">
       {openRequests.length > 0 ? (
         <Card className="mt-4 border-warn/30 bg-warn-soft/40 p-4">
-          <div className="flex items-center gap-2 text-[13px] font-semibold text-warn"><Icon name="clock" size={15} /> Your preparer is waiting on you</div>
+          <div className="flex items-center gap-2 text-[13px] font-semibold text-warn">
+            <Icon name="clock" size={15} /> Your preparer is waiting on you
+            <Tag tone="warn" dot className="ml-auto">Needs you</Tag>
+          </div>
           {openRequests.map((t) => (
             <Link key={t.id} to={`/returns/${ret.id}?tab=messages&thread=${t.id}`} className="mt-2 flex items-center gap-2 rounded-lg bg-surface px-3 py-2 hover:bg-slateSoft">
               <div className="flex-1 text-[13px]">{t.request.what}</div>
@@ -155,8 +170,9 @@ function ReturningHome({ user, ret }) {
           ))}
         </Card>
       ) : (
-        <Card className="mt-4 border-good/30 bg-good-soft/40 p-4 text-[13px] font-medium text-good">
-          <Icon name="check" size={15} className="mr-1 inline" /> Nothing needed from you right now — we’ll reach out if that changes.
+        <Card className="mt-4 flex items-center gap-2 border-good/30 bg-good-soft/40 p-4 text-[13px] font-medium text-good">
+          <Icon name="check" size={15} /> Nothing needed from you right now - we’ll reach out if that changes.
+          <Tag tone="good" dot className="ml-auto">We’re on it</Tag>
         </Card>
       )}
       </div>

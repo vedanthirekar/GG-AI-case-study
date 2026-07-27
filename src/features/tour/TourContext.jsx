@@ -1,4 +1,4 @@
-// Product tour — role-specific.
+// Product tour - role-specific.
 //
 // A tour that walks everyone through the same fourteen screens is a product
 // pitch, not onboarding: a taxpayer does not need to see the review queue, and a
@@ -10,24 +10,24 @@
 //   · The tour never switches account. It runs as *you*, through *your* work.
 //   · Paths resolve against the signed-in user's own return, so a client tours
 //     their return and a preparer tours the one on their desk.
-import { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react'
+import { createContext, useContext, useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import { useSession } from '../../context/SessionContext'
 import { returnsForClient, returnById } from '../../data/db'
 
 const TourCtx = createContext(null)
 
-// The hero return used for firm-side steps — the one with full traceability.
+// The hero return used for firm-side steps - the one with full traceability.
 const FIRM_DEMO_RETURN = 'r-rivera'
 
-// `roles`  — who this step is for.
-// `when`   — optional extra condition, given the resolved context.
-// `to`     — path, or a function of the context (so it can target your return).
+// `roles`  - who this step is for.
+// `when`   - optional extra condition, given the resolved context.
+// `to`     - path, or a function of the context (so it can target your return).
 const LIBRARY = [
   // ---------- taxpayers ----------
   {
     id: 'client-first-action', roles: ['individual', 'business'], when: (c) => c.isNewClient,
     part: 'Getting started', name: 'Your next step', to: '/home', target: 'onboarding-hero',
-    body: 'Everything starts here. One action is highlighted at a time — do that, and the next one appears. Nothing else demands your attention until it matters.',
+    body: 'Everything starts here. One action is highlighted at a time - do that, and the next one appears. Nothing else demands your attention until it matters.',
   },
   {
     id: 'client-home', roles: ['individual', 'business'], when: (c) => !c.isNewClient,
@@ -37,18 +37,18 @@ const LIBRARY = [
   {
     id: 'client-status', roles: ['individual', 'business'], to: (c) => `/returns/${c.rid}?tab=status`, target: 'status-stepper',
     part: 'Your return', name: 'Where things stand', body:
-      'Six plain-language stages, no jargon. You can always see what has happened, what happens next, and who it is waiting on — you or us.',
+      'Six plain-language stages, no jargon. You can always see what has happened, what happens next, and who it is waiting on - you or us.',
   },
   {
     id: 'client-docs', roles: ['individual', 'business'], to: '/my-documents', target: 'doc-search',
     part: 'Your return', name: 'Your documents', body:
-      'Everything you have sent us, plus anything we imported for you. Send what you have whenever you have it — we will tell you what is still missing rather than expecting a complete set up front.',
+      'Everything you have sent us, plus anything we imported for you. Send what you have whenever you have it - we will tell you what is still missing rather than expecting a complete set up front.',
   },
   {
     id: 'client-review', roles: ['individual', 'business'], when: (c) => c.hasFields,
     to: (c) => `/returns/${c.rid}?tab=review`, target: 'trace-panel',
     part: 'Your return', name: 'Where your numbers came from', body:
-      'Click any figure and you can see the document it came from, the exact box on it, and the maths applied. You cannot edit these — your preparer verifies them — but you never have to take them on trust.',
+      'Click any figure and you can see the document it came from, the exact box on it, and the maths applied. You cannot edit these - your preparer verifies them - but you never have to take them on trust.',
   },
   {
     id: 'client-messages', roles: ['individual', 'business'], to: (c) => `/returns/${c.rid}?tab=messages`, target: 'thread-composer',
@@ -58,7 +58,7 @@ const LIBRARY = [
   {
     id: 'client-notes', roles: ['individual', 'business'], to: (c) => `/returns/${c.rid}?tab=notes`, target: 'notes-composer',
     part: 'Talking to us', name: 'The shared notepad', body:
-      'For the smaller things — "heads up, I changed jobs in March". Jot it here and your preparer sees it against your return.',
+      'For the smaller things - "heads up, I changed jobs in March". Jot it here and your preparer sees it against your return.',
   },
   {
     id: 'client-help', roles: ['individual', 'business'], to: '/help/start', target: 'nav-help',
@@ -70,7 +70,7 @@ const LIBRARY = [
   {
     id: 'staff-queue', roles: ['preparer', 'seasonal'], to: '/dashboard', target: 'dash-queue',
     part: 'Your day', name: 'What to work on first', body: (c) => c.role === 'seasonal'
-      ? 'Your queue, ranked by urgency, blockers and due date — and limited to the returns assigned to you. Start at the top.'
+      ? 'Your queue, ranked by urgency, blockers and due date - and limited to the returns assigned to you. Start at the top.'
       : 'Your queue, ranked by urgency, blockers and due date rather than listed by date. Start at the top and keep going.',
   },
   {
@@ -81,17 +81,17 @@ const LIBRARY = [
   {
     id: 'staff-split', roles: ['preparer', 'reviewer'], to: (c) => `/returns/${c.rid}?tab=review&field=f-1a&view=split`, target: 'doc-pane',
     part: 'Preparing a return', name: 'Checking against the form', body:
-      'Switch to side-by-side and the source document takes its own full-height column — page through it, zoom in, and the matched box follows whichever line you select.',
+      'Switch to side-by-side and the source document takes its own full-height column - page through it, zoom in, and the matched box follows whichever line you select.',
   },
   {
     id: 'staff-ai', roles: ['preparer', 'reviewer', 'seasonal'], to: (c) => `/returns/${c.rid}?tab=review&field=f-7&view=split`, target: 'ai-card',
-    part: 'Preparing a return', name: 'Working with Verity AI', body:
-      'The AI shows its evidence and its confidence. Where a figure has two defensible readings it hands you the choice instead of guessing — and whichever you pick, the dependent lines and the refund recompute immediately.',
+    part: 'Preparing a return', name: 'Working with Vantage AI', body:
+      'The AI shows its evidence and its confidence. Where a figure has two defensible readings it hands you the choice instead of guessing - and whichever you pick, the dependent lines and the refund recompute immediately.',
   },
   {
     id: 'staff-affordance', roles: ['preparer', 'reviewer', 'seasonal'], to: (c) => `/returns/${c.rid}?tab=review&field=f-9`, target: 'field-list',
     part: 'Preparing a return', name: 'What you can touch', body: (c) => c.canVerify
-      ? 'One visual language everywhere: AI-extracted, verified, needs review, editable, locked, read-only. Use Review queue to clear the flagged lines from the keyboard — j / k to move, a to accept.'
+      ? 'One visual language everywhere: AI-extracted, verified, needs review, editable, locked, read-only. Use Review queue to clear the flagged lines from the keyboard - j / k to move, a to accept.'
       : 'One visual language everywhere: AI-extracted, verified, needs review, editable, locked, read-only. You can prepare figures; a full preparer or reviewer marks them verified, and locked controls explain who can.',
   },
   {
@@ -102,46 +102,46 @@ const LIBRARY = [
   {
     id: 'staff-messages', roles: ['preparer', 'reviewer'], to: (c) => `/returns/${c.rid}?tab=messages&thread=th-basis`, target: 'thread-composer',
     part: 'Keeping people informed', name: 'Internal vs. client-visible', body:
-      'Threads attach to a specific line or document. The toggle makes the audience unmistakable — internal notes never reach the client — and every thread names who owns the next action.',
+      'Threads attach to a specific line or document. The toggle makes the audience unmistakable - internal notes never reach the client - and every thread names who owns the next action.',
   },
   {
     id: 'seasonal-messages', roles: ['seasonal'], to: (c) => `/returns/${c.rid}?tab=messages&thread=th-basis`, target: 'thread-composer',
     part: 'Keeping people informed', name: 'Messaging the client', body:
-      'You can write to clients here. Internal firm notes are limited to preparers and reviewers, so you will not see them on this screen — the composer says so rather than quietly hiding the option.',
+      'You can write to clients here. Internal firm notes are limited to preparers and reviewers, so you will not see them on this screen - the composer says so rather than quietly hiding the option.',
   },
   {
     id: 'staff-notes', roles: ['preparer', 'reviewer', 'seasonal'], to: (c) => `/returns/${c.rid}?tab=notes`, target: 'notes-composer',
     part: 'Keeping people informed', name: 'The rough tracker', body:
-      'Not everything deserves a thread. Shared notes are the scratchpad — pin one to a line, tick it off when handled, and mark it for everyone or firm-only.',
+      'Not everything deserves a thread. Shared notes are the scratchpad - pin one to a line, tick it off when handled, and mark it for everyone or firm-only.',
   },
   {
     id: 'staff-docs', roles: ['preparer', 'reviewer'], to: '/documents', target: 'doc-search',
     part: 'At scale', name: 'Hundreds of documents', body:
-      'Search, category facets and a collapsible hierarchy keep the whole library workable, and selecting a file keeps the list beside it so you never lose your place.',
+      'The library opens by client rather than as one long list, with anything outstanding first. Open a client for their file - search, category facets and a collapsible hierarchy - or search from here to reach across every document at once.',
   },
 
   // ---------- reviewers ----------
   {
     id: 'reviewer-queue', roles: ['reviewer'], to: '/dashboard', target: 'dash-queue',
     part: 'Your day', name: 'What needs your sign-off', body:
-      'Your queue, ranked by urgency and blockers. As a reviewer you are the last check before a return is filed, so approvals and blocked work surface first.',
+      'The whole practice, ranked by urgency and blockers - you are the last check before a return is filed, so approvals and blocked work surface first. Filter by severity or re-sort by due date when a deadline is what matters.',
   },
   {
     id: 'reviewer-verify', roles: ['reviewer'], to: (c) => `/returns/${c.rid}?tab=review&field=f-3a`, target: 'field-list',
     part: 'Reviewing', name: 'Verify and approve', body:
-      'You can mark figures verified against their source and approve the return for filing — the two things a preparer cannot do alone. Review queue walks only the flagged lines: j / k to move, a to accept.',
+      'You can mark figures verified against their source and approve the return for filing - the two things a preparer cannot do alone. Review queue walks only the flagged lines: j / k to move, a to accept.',
   },
 
   // ---------- firm administrators ----------
   {
     id: 'admin-overview', roles: ['admin'], to: '/dashboard', target: 'dash-queue',
     part: 'Running the firm', name: 'The whole practice', body:
-      'You see every open item across the firm, ranked, and can filter to any member of staff. You do not edit tax figures — that stays with preparers and reviewers — but nothing is hidden from you.',
+      'You see every open item across the firm, ranked, and can filter to any member of staff. You do not edit tax figures - that stays with preparers and reviewers - but nothing is hidden from you.',
   },
   {
     id: 'admin-access', roles: ['admin'], to: '/people', target: 'access-matrix',
     part: 'Running the firm', name: 'Who can do what', body:
-      'This is yours alone. Toggling a role takes effect the moment that person loads their next screen — navigation, permissions and wording all follow. Everyone keeps at least one role, and granting sign-off authority asks you to confirm.',
+      'This is yours alone. Toggling a role takes effect the moment that person loads their next screen - navigation, permissions and wording all follow. Everyone keeps at least one role, and granting sign-off authority asks you to confirm.',
   },
   {
     id: 'admin-returns', roles: ['admin'], to: '/returns', target: 'nav-returns',
@@ -154,13 +154,13 @@ const LIBRARY = [
     id: 'multi-role', roles: ['preparer', 'reviewer', 'admin', 'seasonal', 'individual', 'business'],
     when: (c) => c.multiRole, to: '/dashboard', target: 'account',
     part: 'Your account', name: 'Your two roles', body:
-      'You work at the firm and you also file your own return. Your account menu switches between them — one login, two entirely separate experiences, and your personal return never appears in your firm work.',
+      'You work at the firm and you also file your own return. Your account menu switches between them - one login, two entirely separate experiences, and your personal return never appears in your firm work.',
   },
   {
     id: 'orientation', roles: ['preparer', 'reviewer', 'admin', 'seasonal'],
     to: (c) => `/returns/${c.rid}?tab=review&field=f-7`, target: 'related-rail',
     part: 'Finding your way', name: 'Never losing your place', body:
-      'The Related panel, breadcrumbs, "Back to…" and ⌘K search connect everything. Links carry full context — even signing in preserves the one you followed.',
+      'The Related panel, breadcrumbs, "Back to…" and ⌘K search connect everything. Links carry full context - even signing in preserves the one you followed.',
   },
   {
     id: 'staff-help', roles: ['preparer', 'reviewer', 'admin', 'seasonal'], to: '/help/start', target: 'nav-help',
@@ -189,6 +189,11 @@ export function TourProvider({ children }) {
   const { user, activeRole, caps, roles } = useSession()
   const [active, setActive] = useState(false)
   const [i, setI] = useState(0)
+  // Someone arriving in a role for the first time doesn't know a tour exists.
+  // Offer it once - then never again for that role this session, so exploring
+  // six demo accounts isn't six interruptions.
+  const [nudge, setNudge] = useState(false)
+  const offered = useRef(new Set())
 
   const ctx = useMemo(() => buildContext({ user, activeRole, caps, roles }),
     [user, activeRole, caps, roles])
@@ -208,9 +213,23 @@ export function TourProvider({ children }) {
   // Changing role mid-tour would leave you on a step that is no longer yours.
   useEffect(() => { setActive(false); setI(0) }, [activeRole, user?.id])
 
-  const start = useCallback(() => { setI(0); setActive(true) }, [])
-  const stop = useCallback(() => setActive(false), [])
   const total = steps.length
+
+  // Arm the nudge the first time a role with a tour becomes active. Keyed by
+  // user+role, so Dana's preparer side and her taxpayer side each get one offer.
+  useEffect(() => {
+    if (!user?.id || !activeRole || total === 0) { setNudge(false); return }
+    const key = `${user.id}:${activeRole}`
+    if (offered.current.has(key)) { setNudge(false); return }
+    offered.current.add(key)
+    const t = setTimeout(() => setNudge(true), 700) // let the screen settle first
+    return () => clearTimeout(t)
+  }, [user?.id, activeRole, total])
+
+  const dismissNudge = useCallback(() => setNudge(false), [])
+
+  const start = useCallback(() => { setNudge(false); setI(0); setActive(true) }, [])
+  const stop = useCallback(() => setActive(false), [])
   const next = useCallback(() => setI((x) => Math.min(x + 1, total - 1)), [total])
   const prev = useCallback(() => setI((x) => Math.max(x - 1, 0)), [])
   const goto = useCallback((idx) => setI(idx), [])
@@ -222,7 +241,8 @@ export function TourProvider({ children }) {
     total,
     start, stop, next, prev, goto,
     isFirst: i === 0, isLast: i >= total - 1,
-  }), [active, steps, i, total, start, stop, next, prev, goto])
+    nudge: nudge && !active && total > 0, dismissNudge,
+  }), [active, steps, i, total, start, stop, next, prev, goto, nudge, dismissNudge])
 
   return <TourCtx.Provider value={value}>{children}</TourCtx.Provider>
 }

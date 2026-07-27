@@ -1,7 +1,7 @@
 // ============================================================================
 // Simulated AI (Challenge 10).
 // These stubs return plausible, structured "AI output" the same shape a real
-// model + tool pipeline might emit. NOTHING here calls a model — the values are
+// model + tool pipeline might emit. NOTHING here calls a model - the values are
 // derived deterministically from the mock field so the UI can render confidence,
 // evidence, uncertainty, a recommended action and a correction path.
 // The point of the case study is how we PRESENT and build trust around AI, so
@@ -19,7 +19,7 @@ export function explainField(field, sourceDoc) {
   if (sourceDoc) {
     evidence.push({
       kind: 'source',
-      label: `${sourceDoc.type} — ${sourceDoc.issuer}`,
+      label: `${sourceDoc.type} - ${sourceDoc.issuer}`,
       detail: field.sourceLocation || 'matched region',
       docId: sourceDoc.id,
     })
@@ -40,7 +40,7 @@ export function explainField(field, sourceDoc) {
     action = { label: 'Review before verifying', tone: 'warn' }
     if (!uncertainty) uncertainty = 'Confidence is below our auto-verify threshold.'
   }
-  if (field.state === 'locked') action = { label: 'Locked — edit the inputs', tone: 'muted' }
+  if (field.state === 'locked') action = { label: 'Locked - edit the inputs', tone: 'muted' }
   if (field.state === 'readonly') action = { label: 'Set by IRS rule', tone: 'muted' }
 
   return {
@@ -57,10 +57,10 @@ export function explainField(field, sourceDoc) {
 
 function aiSummary(f) {
   const amt = `$${Number(f.amount).toLocaleString()}`
-  if (f.state === 'locked') return `Verity calculated ${amt} from other lines on the return (${f.formula || f.transform}).`
+  if (f.state === 'locked') return `Vantage calculated ${amt} from other lines on the return (${f.formula || f.transform}).`
   if (f.state === 'readonly') return `${amt} is set by an IRS rule (${f.transform}).`
-  if (f.sourceLocation) return `Verity extracted ${amt} from ${f.sourceLocation}. ${f.transform === 'Copied as-is' ? 'No transformation applied.' : f.transform + '.'}`
-  return `${amt} was entered directly; Verity has no source document for it.`
+  if (f.sourceLocation) return `Vantage extracted ${amt} from ${f.sourceLocation}. ${f.transform === 'Copied as-is' ? 'No transformation applied.' : f.transform + '.'}`
+  return `${amt} was entered directly; Vantage has no source document for it.`
 }
 
 // A tiny "did the AI find anything worth flagging" pass, used on the dashboard.
@@ -73,7 +73,7 @@ export function returnAiFlags(ret) {
   return flags
 }
 
-// Simulate applying a user's correction — returns the "after" object the UI shows.
+// Simulate applying a user's correction - returns the "after" object the UI shows.
 export function applyCorrection(field, newValue) {
   return {
     ...field,
@@ -82,6 +82,6 @@ export function applyCorrection(field, newValue) {
     confidence: 100,
     correctedFrom: field.amount,
     correctedAt: new Date().toISOString(),
-    aiNote: `Overridden by user. Verity will learn from this correction for similar ${field.label.toLowerCase()} fields.`,
+    aiNote: `Overridden by user. Vantage will learn from this correction for similar ${field.label.toLowerCase()} fields.`,
   }
 }

@@ -3,7 +3,7 @@
 // It seeds from the static mock db, then lets the UI mutate: verifying a field,
 // correcting a source value (which recomputes every dependent line + the refund),
 // choosing between AI interpretations, fulfilling a request, or ingesting a new
-// document. No persistence, no backend — just enough state that the product
+// document. No persistence, no backend - just enough state that the product
 // behaves like a system instead of a slideshow.
 // ============================================================================
 import { createContext, useContext, useMemo, useState, useCallback, useRef } from 'react'
@@ -48,7 +48,7 @@ function recompute(fields) {
 const DERIVED_LINES = new Set(['9', '11', '15', '16', '34'])
 
 export function StoreProvider({ children }) {
-  // returns: { [rid]: fields[] }   — cloned lazily from db on first touch
+  // returns: { [rid]: fields[] }   - cloned lazily from db on first touch
   const [returns, setReturns] = useState({})
   const [fulfilled, setFulfilled] = useState(() => new Set())
   const [flashes, setFlashes] = useState(() => new Set()) // "rid:fid" recently changed

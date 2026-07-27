@@ -1,12 +1,12 @@
 // People & access (Challenge 05).
 // The role architecture is only credible if somebody actually controls it. This
-// is the administrator's view of who holds which role — and the toggles are
+// is the administrator's view of who holds which role - and the toggles are
 // real: they write to AccessContext, which SessionContext resolves roles
 // against, so signing in as that person genuinely gives them the new
 // navigation, permissions and wording.
 //
 // The permission descriptions are generated from CAPS in lib/roles.js, the same
-// map the rest of the app enforces against — one source of truth, so this screen
+// map the rest of the app enforces against - one source of truth, so this screen
 // can't drift from what the product actually does.
 import { useEffect, useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -117,7 +117,7 @@ export default function AccessManager() {
               })}
             </div>
 
-            {/* taxpayers, for completeness — their role comes from having a return */}
+            {/* taxpayers, for completeness - their role comes from having a return */}
             <div className="border-t border-line bg-bgtint/50 px-4 py-2.5 text-micro font-bold uppercase tracking-wider text-faint">
               Taxpayers
             </div>
@@ -129,7 +129,7 @@ export default function AccessManager() {
                     <div className="truncate text-body font-semibold">{u.name}</div>
                     <div className="truncate font-mono text-[10.5px] text-faint">{u.email}</div>
                   </div>
-                  <Tooltip label="A taxpayer role comes from having a return in the system — it isn’t granted here.">
+                  <Tooltip label="A taxpayer role comes from having a return in the system - it isn’t granted here.">
                     <span className="flex items-center gap-1.5 text-micro font-semibold text-faint">
                       <Icon name="lock" size={12} /> {ROLES[rolesFor(u.id)[0]]?.label}
                     </span>
@@ -141,7 +141,7 @@ export default function AccessManager() {
 
           <p className="mt-2 flex items-start gap-1.5 text-micro text-faint">
             <Icon name="shield" size={12} className="mt-0.5 shrink-0" />
-            Everyone keeps at least one role — the last one can’t be removed. Changes apply immediately;
+            Everyone keeps at least one role - the last one can’t be removed. Changes apply immediately;
             switch to that person in your account menu to see it.
           </p>
 
@@ -199,7 +199,7 @@ export default function AccessManager() {
 
             <div className="mt-4 rounded-xl2 border border-accent/25 bg-accent-soft/50 p-3 text-meta leading-relaxed text-muted">
               <b className="font-semibold text-accent">Try it:</b> give Jordan Lee the reviewer role, then
-              switch to their account. The approve action unlocks and internal notes appear — the same
+              switch to their account. The approve action unlocks and internal notes appear - the same
               shell, a different set of permissions.
             </div>
           </Card>
@@ -217,7 +217,7 @@ export default function AccessManager() {
                 <Icon name="alert" size={18} /> <span className="font-display text-lead font-bold">Grant sign-off authority?</span>
               </div>
               <p className="mt-2 text-body leading-relaxed text-muted">
-                A reviewer can approve returns for filing — the last check before a return leaves the firm.
+                A reviewer can approve returns for filing - the last check before a return leaves the firm.
                 Give this to <b className="font-semibold text-ink">{confirm.u.name}</b>?
               </p>
               <div className="mt-4 flex justify-end gap-2">

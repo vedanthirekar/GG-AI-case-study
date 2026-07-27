@@ -1,7 +1,7 @@
 // One markup renderer for all six directions. Every element carries a class hook,
-// and each theme's CSS restyles *and recomposes* from these same nodes — which is
+// and each theme's CSS restyles *and recomposes* from these same nodes - which is
 // exactly how the real app works (tokens + utilities, one component tree).
-const D = window.VERITY
+const D = window.VANTAGE
 
 const money = (n, opts = {}) => {
   const neg = n < 0
@@ -43,7 +43,7 @@ const sidebar = () => `
   <aside class="rail">
     <div class="brand">
       <span class="brand-mark">V</span>
-      <span class="brand-name">Verity</span>
+      <span class="brand-name">Vantage</span>
     </div>
     <nav class="nav">
       ${D.nav.map((n) => `
@@ -155,14 +155,14 @@ const reviewScreen = () => {
         <div class="ai">
           <div class="ai-head">
             ${icon('spark', 'ai-ic')}
-            <span class="ai-title">Verity AI</span>
+            <span class="ai-title">Vantage AI</span>
             <span class="ai-conf">${D.ai.conf}% confident</span>
           </div>
           <p class="ai-note">${D.ai.note}</p>
           <div class="ai-flag">${icon('alert')}<span>${D.ai.flag}</span></div>
           <div class="ai-anom">${D.ai.anomaly}</div>
 
-          <div class="ai-label">Two defensible readings — pick one</div>
+          <div class="ai-label">Two defensible readings - pick one</div>
           ${D.ai.candidates.map((c) => `
             <button class="cand ${c.rec ? 'is-rec' : ''}">
               <span class="cand-top">
@@ -190,7 +190,7 @@ const dashScreen = () => `
     <div class="dash-head">
       <div>
         <h1 class="dash-title">Your queue</h1>
-        <p class="dash-sub">Ranked by what will cost the most to get wrong — deadline, unresolved flags, and AI confidence.</p>
+        <p class="dash-sub">Ranked by what will cost the most to get wrong - deadline, unresolved flags, and AI confidence.</p>
       </div>
       <div class="dash-acts">
         <button class="btn">Filter</button>
@@ -225,7 +225,7 @@ const dashScreen = () => `
             <span class="q-flag-txt">${q.flag}</span>
             ${q.open ? `<span class="q-open">${q.open} open</span>` : ''}
           </span>
-          <span class="q-amt">${q.amount ? money(q.amount) : '<span class="q-none">—</span>'}</span>
+          <span class="q-amt">${q.amount ? money(q.amount) : '<span class="q-none">-</span>'}</span>
           <span class="q-conf">${q.conf != null
             ? `<span class="conf-bar"><span style="width:${q.conf}%"></span></span><span class="conf-num">${q.conf}%</span>`
             : '<span class="q-none">not started</span>'}</span>
@@ -258,7 +258,7 @@ function traceAnim() {
   if (reduce || !window.gsap) return
 
   // gsap.from() hides the element until its tween runs, so a timeline that never
-  // starts — a backgrounded tab throttles rAF, a lazy iframe, a slow CDN — would
+  // starts - a backgrounded tab throttles rAF, a lazy iframe, a slow CDN - would
   // leave the trace and the AI card permanently invisible. Give the animation a
   // hard deadline that restores the natural state no matter what.
   const soft = ['.tnode', '.ai']

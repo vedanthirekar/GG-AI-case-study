@@ -1,10 +1,10 @@
-/* D5 · GLASS — Glassmorphism
+/* D5 · GLASS - Glassmorphism
    This is literally what ui-ux-pro-max returned for "tax preparation accounting
    SaaS multi-role financial review trust". Depth by z-layering and backdrop
    blur instead of borders; the source document floats *over* the return rather
    than sitting beside it.
    Caveat carried from the same database record: Performance ⚠, and
-   "Accessibility ⚠ ensure 4.5:1" — backdrop-filter over a dense table is the
+   "Accessibility ⚠ ensure 4.5:1" - backdrop-filter over a dense table is the
    most expensive and the most contrast-fragile option of the six. */
 :root {
   --bg: #EEF3FB; --surface: rgba(255, 255, 255, .72); --surface2: rgba(255, 255, 255, .48);

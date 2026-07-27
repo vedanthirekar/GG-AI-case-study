@@ -1,9 +1,9 @@
 {
-  "name": "verity-tax-platform",
+  "name": "vantage-tax-platform",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Verity — an AI-powered tax platform prototype (AI Engineer case study, all 10 challenges).",
+  "description": "Vantage - an AI-powered tax platform prototype (AI Engineer case study, all 10 challenges).",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

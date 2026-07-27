@@ -1,6 +1,6 @@
-// Faithful excerpts from src/data/db.js — every mockup renders this same content,
+// Faithful excerpts from src/data/db.js - every mockup renders this same content,
 // so the only thing that varies between directions is the design.
-window.VERITY = {
+window.VANTAGE = {
   ret: {
     client: 'Jordan Rivera', year: 2025, form: '1040', status: 'Married filing jointly',
     stage: 'In review', due: 'in 9 days', refund: 6789,
@@ -25,7 +25,7 @@ window.VERITY = {
   ],
 
   doc: {
-    name: '1099-B — Bluepeak Securities', issuer: 'Bluepeak Securities',
+    name: '1099-B - Bluepeak Securities', issuer: 'Bluepeak Securities',
     pages: 4, page: 1, uploaded: '18 Feb 2026', source: 'Imported', status: 'Needs review',
     boxes: [
       { label: 'Payer',                 value: 'Bluepeak Securities' },
@@ -46,7 +46,7 @@ window.VERITY = {
     conf: 68,
     note: 'Two lots on the 1099-B show “basis not reported to IRS.” Gain may change once basis is confirmed.',
     flag: 'Cost basis on 2 of 11 lots is unverified.',
-    anomaly: 'Nearly 3× last year — driven by the two lots with unconfirmed basis.',
+    anomaly: 'Nearly 3× last year - driven by the two lots with unconfirmed basis.',
     candidates: [
       { label: 'Basis as reported ($42,790)', value: 6110, conf: 68, rec: true,
         why: 'Use the cost basis the broker reported on the 9 covered lots and the client’s figure for the other 2.' },

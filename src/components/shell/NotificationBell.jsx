@@ -1,7 +1,7 @@
 // Activity centre.
 // Deliberately not a firehose: items are filtered to the current audience (firm
 // vs. taxpayer, and for taxpayers, to that person), and every one of them is a
-// link back into the exact object it's about — the same context-preserving rule
+// link back into the exact object it's about - the same context-preserving rule
 // the rest of the navigation follows (Challenge 04).
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -46,10 +46,11 @@ export default function NotificationBell() {
   return (
     <div className="relative" ref={ref}>
       <button onClick={() => setOpen((o) => !o)} title="Activity" data-tour="bell"
-        className="relative grid h-8 w-8 place-items-center rounded-lg text-muted transition hover:bg-slateSoft hover:text-ink">
-        <Icon name="bell" size={17} />
+        aria-label={unread > 0 ? `Activity - ${unread} unread` : 'Activity'}
+        className="relative grid h-9 w-9 place-items-center rounded-lg text-muted transition hover:bg-slateSoft hover:text-ink">
+        <Icon name="bell" size={19} />
         {unread > 0 && (
-          <span className="absolute right-1 top-1 grid h-[15px] min-w-[15px] place-items-center rounded-full bg-danger-fill px-1 text-[9px] font-bold text-white">
+          <span className="absolute right-0.5 top-0.5 grid h-[16px] min-w-[16px] place-items-center rounded-full bg-danger-fill px-1 text-[9px] font-bold text-white">
             {unread > 9 ? '9+' : unread}
           </span>
         )}

@@ -1,4 +1,4 @@
-/* D4 · CLARITY — Soft UI Evolution, taxpayer-first
+/* D4 · CLARITY - Soft UI Evolution, taxpayer-first
    The only direction optimised for the frightened taxpayer rather than the
    professional. Warm stock, teal and terracotta, 15px base type, more air,
    plain language promoted over badges, fewer simultaneous colour signals.
@@ -37,7 +37,7 @@
 .line-sub { font-size: var(--fs-micro); }
 .line { padding: 9px var(--pad); }
 
-/* one calm state language — soft filled pills, no outline, no confidence noise */
+/* one calm state language - soft filled pills, no outline, no confidence noise */
 .badge { border: 0; padding: 3px 11px; font-weight: 600; }
 .badge-conf { display: none; }
 .badge.is-locked, .badge.is-readonly { background: var(--surface2); color: var(--muted); }

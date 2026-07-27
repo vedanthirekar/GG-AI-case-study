@@ -1,9 +1,9 @@
 // ============================================================================
-// Verity mock database.
+// Vantage mock database.
 // Everything here is FAKE but internally consistent. A deterministic seeded RNG
 // generates volume (dozens of returns, hundreds of documents) so search,
 // filtering, prioritization and the affordance system are exercised against
-// real scale — and a set of hand-authored "hero" records give the traceability,
+// real scale - and a set of hand-authored "hero" records give the traceability,
 // onboarding and collaboration screens genuine depth.
 // No network, no persistence: this module is the single source of truth.
 // ============================================================================
@@ -32,23 +32,23 @@ const today = new Date('2026-07-24')
 const daysFromNow = (d) => new Date(today.getTime() + d * 86400000).toISOString().slice(0, 10)
 
 // ============================================================================
-// USERS  (Challenge 05 — six roles, one of them multi-role)
+// USERS  (Challenge 05 - six roles, one of them multi-role)
 // ============================================================================
-// `email` is the sign-in handle (any password is accepted — there is no auth
+// `email` is the sign-in handle (any password is accepted - there is no auth
 // backend). `blurb` is the one-line "what you'll see" shown on the login screen.
 export const users = [
   { id: 'u-dana', name: 'Dana Morales', initials: 'DM', roles: ['preparer', 'individual'], primary: 'preparer', title: 'Senior Tax Preparer', tint: '#2563eb',
-    email: 'dana.morales@verity.tax', blurb: 'Prepares returns — and files her own. Two roles, one login.' },
+    email: 'dana.morales@vantage.tax', blurb: 'Prepares returns - and files her own. Two roles, one login.' },
   { id: 'u-sam', name: 'Sam Okafor', initials: 'SO', roles: ['reviewer'], primary: 'reviewer', title: 'Review Manager', tint: '#7c3aed',
-    email: 'sam.okafor@verity.tax', blurb: 'Signs returns off for filing; sees every internal note.' },
+    email: 'sam.okafor@vantage.tax', blurb: 'Signs returns off for filing; sees every internal note.' },
   { id: 'u-priya', name: 'Priya Nair', initials: 'PN', roles: ['admin'], primary: 'admin', title: 'Firm Administrator', tint: '#0891b2',
-    email: 'priya.nair@verity.tax', blurb: 'Runs the firm and controls who can do what.' },
+    email: 'priya.nair@vantage.tax', blurb: 'Runs the firm and controls who can do what.' },
   { id: 'u-jordan', name: 'Jordan Lee', initials: 'JL', roles: ['seasonal'], primary: 'seasonal', title: 'Seasonal Preparer', tint: '#b45309',
-    email: 'jordan.lee@verity.tax', blurb: 'Busy-season hire — reduced permissions, assigned work only.' },
+    email: 'jordan.lee@vantage.tax', blurb: 'Busy-season hire - reduced permissions, assigned work only.' },
   { id: 'u-rivera', name: 'Jordan Rivera', initials: 'JR', roles: ['individual'], primary: 'individual', title: 'Client', tint: '#16a34a',
     email: 'j.rivera@gmail.com', blurb: 'Returning taxpayer with a return mid-review.' },
   { id: 'u-alex', name: 'Alex Chen', initials: 'AC', roles: ['individual'], primary: 'individual', title: 'Client (new)', tint: '#db2777',
-    email: 'alex.chen@outlook.com', blurb: 'Brand-new client — starts at day one, nothing set up yet.' },
+    email: 'alex.chen@outlook.com', blurb: 'Brand-new client - starts at day one, nothing set up yet.' },
   { id: 'u-maya', name: 'Maya Torres', initials: 'MT', roles: ['business'], primary: 'business', title: 'Owner, Torres Design Co.', tint: '#ca8a04',
     email: 'maya@torresdesign.co', blurb: 'Business owner filing an 1120-S for her studio.' },
 ]
@@ -74,8 +74,8 @@ function makeDoc(returnId, clientId, spec) {
     returnId, clientId,
     type: t.type,
     category: t.cat,
-    name: spec.name || `${t.type} — ${spec.issuer || pick(EMPLOYERS)}`,
-    issuer: spec.issuer || '—',
+    name: spec.name || `${t.type} - ${spec.issuer || pick(EMPLOYERS)}`,
+    issuer: spec.issuer || '-',
     pages: spec.pages || int(1, 3),
     uploaded: spec.uploaded || daysFromNow(-int(10, 150)),
     status: statusKey,
@@ -85,43 +85,43 @@ function makeDoc(returnId, clientId, spec) {
 }
 
 // ============================================================================
-// HERO RETURN — Jordan Rivera, Form 1040, 2025
+// HERO RETURN - Jordan Rivera, Form 1040, 2025
 // Fully traceable fields wired to real source documents. Powers Challenge 01,
 // 08 and 10 with hand-tuned states, confidences and calculations.
 // ============================================================================
 const riveraDocs = [
   makeDoc('r-rivera', 'u-rivera', {
     id: 'd-rivera-w2', typeDef: DOC_TYPES[0], issuer: 'Acme Corporation',
-    name: 'W-2 — Acme Corporation', pages: 1, uploaded: '2026-02-03', status: 'processed', source: 'client-upload',
+    name: 'W-2 - Acme Corporation', pages: 1, uploaded: '2026-02-03', status: 'processed', source: 'client-upload',
     boxes: [
       { key: 'employer', label: 'Employer', value: 'Acme Corporation' },
       { key: 'employee', label: 'Employee', value: 'Rivera, Jordan' },
-      { key: 'box1', label: 'Box 1 — Wages, tips, other comp.', value: '92,400.00' },
-      { key: 'box2', label: 'Box 2 — Federal income tax withheld', value: '14,880.00' },
-      { key: 'box3', label: 'Box 3 — Social security wages', value: '96,000.00' },
-      { key: 'box5', label: 'Box 5 — Medicare wages', value: '96,000.00' },
+      { key: 'box1', label: 'Box 1 - Wages, tips, other comp.', value: '92,400.00' },
+      { key: 'box2', label: 'Box 2 - Federal income tax withheld', value: '14,880.00' },
+      { key: 'box3', label: 'Box 3 - Social security wages', value: '96,000.00' },
+      { key: 'box5', label: 'Box 5 - Medicare wages', value: '96,000.00' },
     ],
   }),
   makeDoc('r-rivera', 'u-rivera', {
     id: 'd-rivera-int', typeDef: DOC_TYPES[1], issuer: 'First National',
-    name: '1099-INT — First National', pages: 1, uploaded: '2026-02-05', status: 'processed', source: 'imported',
+    name: '1099-INT - First National', pages: 1, uploaded: '2026-02-05', status: 'processed', source: 'imported',
     boxes: [
       { key: 'payer', label: 'Payer', value: 'First National Bank' },
-      { key: 'box1', label: 'Box 1 — Interest income', value: '1,204.00' },
+      { key: 'box1', label: 'Box 1 - Interest income', value: '1,204.00' },
     ],
   }),
   makeDoc('r-rivera', 'u-rivera', {
     id: 'd-rivera-div', typeDef: DOC_TYPES[2], issuer: 'Fidelis Brokerage',
-    name: '1099-DIV — Fidelis Brokerage', pages: 2, uploaded: '2026-02-11', status: 'needs-review', source: 'imported',
+    name: '1099-DIV - Fidelis Brokerage', pages: 2, uploaded: '2026-02-11', status: 'needs-review', source: 'imported',
     boxes: [
       { key: 'payer', label: 'Payer', value: 'Fidelis Brokerage' },
-      { key: 'box1a', label: 'Box 1a — Total ordinary dividends', value: '4,410.00' },
-      { key: 'box1b', label: 'Box 1b — Qualified dividends', value: '3,980.00' },
+      { key: 'box1a', label: 'Box 1a - Total ordinary dividends', value: '4,410.00' },
+      { key: 'box1b', label: 'Box 1b - Qualified dividends', value: '3,980.00' },
     ],
   }),
   makeDoc('r-rivera', 'u-rivera', {
     id: 'd-rivera-b', typeDef: DOC_TYPES[4], issuer: 'Bluepeak Securities',
-    name: '1099-B — Bluepeak Securities', pages: 4, uploaded: '2026-02-18', status: 'needs-review', source: 'imported',
+    name: '1099-B - Bluepeak Securities', pages: 4, uploaded: '2026-02-18', status: 'needs-review', source: 'imported',
     boxes: [
       { key: 'payer', label: 'Payer', value: 'Bluepeak Securities' },
       { key: 'proceeds', label: 'Proceeds', value: '48,900.00' },
@@ -131,10 +131,10 @@ const riveraDocs = [
   }),
   makeDoc('r-rivera', 'u-rivera', {
     id: 'd-rivera-1098', typeDef: DOC_TYPES[7], issuer: 'Meridian Bank',
-    name: '1098 — Meridian Bank (mortgage)', pages: 1, uploaded: '2026-02-06', status: 'processed', source: 'client-upload',
+    name: '1098 - Meridian Bank (mortgage)', pages: 1, uploaded: '2026-02-06', status: 'processed', source: 'client-upload',
     boxes: [
       { key: 'lender', label: 'Lender', value: 'Meridian Bank' },
-      { key: 'box1', label: 'Box 1 — Mortgage interest received', value: '11,240.00' },
+      { key: 'box1', label: 'Box 1 - Mortgage interest received', value: '11,240.00' },
     ],
   }),
 ]
@@ -148,7 +148,7 @@ const riveraFields = [
     verifiedBy: 'u-dana', aiNote: 'Single payer, exact match.' },
   { id: 'f-3a', line: '3a', group: 'Income', label: 'Qualified dividends', amount: 3980, prior: 3600, state: 'review', confidence: 71,
     sourceDocId: 'd-rivera-div', sourceBox: 'box1b', sourceLocation: 'Box 1b · page 1', transform: 'Copied as-is',
-    aiNote: 'Box 1a (ordinary) and 1b (qualified) differ by $430 — confirm the qualified portion is what belongs on 3a.',
+    aiNote: 'Box 1a (ordinary) and 1b (qualified) differ by $430 - confirm the qualified portion is what belongs on 3a.',
     flag: 'Ordinary vs. qualified dividends often get swapped. Worth a human check.',
     candidates: [
       { key: 'qualified', value: 3980, label: 'Qualified dividends (Box 1b)', rationale: 'Line 3a is specifically the qualified portion. Box 1b = $3,980.', confidence: 82, recommended: true,
@@ -164,12 +164,12 @@ const riveraFields = [
     ],
     aiNote: 'Two lots on the 1099-B show “basis not reported to IRS.” Gain may change once basis is confirmed.',
     flag: 'Cost basis on 2 of 11 lots is unverified.',
-    anomaly: 'Nearly 3× last year — driven by the two lots with unconfirmed basis.',
+    anomaly: 'Nearly 3× last year - driven by the two lots with unconfirmed basis.',
     candidates: [
       { key: 'reported', value: 6110, label: 'Basis as reported ($42,790)', rationale: 'Use the cost basis the broker reported on the 9 covered lots and the client’s figure for the other 2.', confidence: 68, recommended: true,
         evidence: ['1099-B proceeds $48,900 − basis $42,790', 'Client provided basis for 2 uncovered lots'] },
       { key: 'zerobasis', value: 8910, label: 'Assume $0 basis on 2 lots', rationale: 'Conservative: treat the 2 unconfirmed lots as $0 basis until a statement arrives.', confidence: 55,
-        evidence: ['Adds $2,800 of gain', 'Safe default when basis is missing — revise when the client uploads the statement'] },
+        evidence: ['Adds $2,800 of gain', 'Safe default when basis is missing - revise when the client uploads the statement'] },
     ] },
   { id: 'f-8', line: '8', group: 'Income', label: 'Other income', amount: 0, prior: 0, state: 'editable', confidence: null,
     sourceDocId: null, sourceLocation: null, transform: null, aiNote: 'No source found. Enter manually if applicable.' },
@@ -232,8 +232,8 @@ returns.push({
 
 // -- hero: Alex Chen (brand-new client, first-run onboarding, stage 0) --------
 const alexDocs = [
-  makeDoc('r-chen', 'u-alex', { id: 'd-chen-w2', typeDef: DOC_TYPES[0], issuer: 'Northwind Traders', name: 'W-2 — Northwind Traders', status: 'processed', uploaded: daysFromNow(-2), source: 'client-upload', boxes: [
-    { key: 'box1', label: 'Box 1 — Wages', value: '61,500.00' }, { key: 'box2', label: 'Box 2 — Withheld', value: '7,410.00' },
+  makeDoc('r-chen', 'u-alex', { id: 'd-chen-w2', typeDef: DOC_TYPES[0], issuer: 'Northwind Traders', name: 'W-2 - Northwind Traders', status: 'processed', uploaded: daysFromNow(-2), source: 'client-upload', boxes: [
+    { key: 'box1', label: 'Box 1 - Wages', value: '61,500.00' }, { key: 'box2', label: 'Box 2 - Withheld', value: '7,410.00' },
   ] }),
 ]
 documents.push(...alexDocs)
@@ -260,11 +260,11 @@ questionnaire.push(
 
 // -- hero: Dana's personal return (multi-role: firm employee as a client) -----
 documents.push(makeDoc('r-morales', 'u-dana', {
-  id: 'd-morales-w2', typeDef: DOC_TYPES[0], issuer: 'Verity Advisors LLP', name: 'W-2 — Verity Advisors LLP',
+  id: 'd-morales-w2', typeDef: DOC_TYPES[0], issuer: 'Vantage Advisors LLP', name: 'W-2 - Vantage Advisors LLP',
   pages: 1, uploaded: daysFromNow(-40), status: 'processed', source: 'client-upload',
   boxes: [
-    { key: 'box1', label: 'Box 1 — Wages', value: '118,500.00' },
-    { key: 'box2', label: 'Box 2 — Federal income tax withheld', value: '19,900.00' },
+    { key: 'box1', label: 'Box 1 - Wages', value: '118,500.00' },
+    { key: 'box2', label: 'Box 2 - Federal income tax withheld', value: '19,900.00' },
   ],
 }))
 const moralesFields = [
@@ -336,7 +336,7 @@ for (let i = 0; i < 60; i++) {
 }
 
 // ============================================================================
-// TASKS  (Challenge 07 — the actionable dashboard feeds off these)
+// TASKS  (Challenge 07 - the actionable dashboard feeds off these)
 // ============================================================================
 let taskSeq = 0
 function addTask(spec) { taskSeq += 1; tasks.push({ id: `t-${taskSeq}`, status: 'open', ...spec }) }
@@ -365,7 +365,7 @@ for (const r of returns) {
 }
 
 // ============================================================================
-// THREADS  (Challenge 02 — contextual collaboration, internal vs shared)
+// THREADS  (Challenge 02 - contextual collaboration, internal vs shared)
 // ============================================================================
 threads.push({
   id: 'th-basis', returnId: 'r-rivera', subject: 'Cost basis on Bluepeak brokerage lots',
@@ -373,9 +373,9 @@ threads.push({
   status: 'waiting-client', ownerRole: 'client', ownerUserId: 'u-rivera',
   request: { what: 'Cost-basis statement for the 2 flagged lots', due: daysFromNow(3), fulfilled: false },
   messages: [
-    { authorId: 'u-dana', role: 'preparer', ts: '2026-07-20T15:02', internal: false, body: 'Hi Jordan — two lots on your Bluepeak 1099-B don’t show a cost basis. Could you upload the year-end statement that lists what you originally paid?' },
+    { authorId: 'u-dana', role: 'preparer', ts: '2026-07-20T15:02', internal: false, body: 'Hi Jordan - two lots on your Bluepeak 1099-B don’t show a cost basis. Could you upload the year-end statement that lists what you originally paid?' },
     { authorId: 'u-dana', role: 'preparer', ts: '2026-07-20T15:04', internal: true, body: 'Internal: if we can’t get basis, we default to $0 basis which inflates the gain ~$2,800. Flag to Sam before filing.' },
-    { authorId: 'u-rivera', role: 'individual', ts: '2026-07-21T09:20', internal: false, body: 'Sure — is the monthly statement enough or do you need the annual gain/loss report specifically?' },
+    { authorId: 'u-rivera', role: 'individual', ts: '2026-07-21T09:20', internal: false, body: 'Sure - is the monthly statement enough or do you need the annual gain/loss report specifically?' },
   ],
 })
 threads.push({
@@ -389,7 +389,7 @@ threads.push({
 })
 threads.push({
   id: 'th-w2', returnId: 'r-rivera', subject: 'W-2 looks good',
-  contextType: 'document', contextId: 'd-rivera-w2', contextLabel: 'W-2 — Acme Corporation',
+  contextType: 'document', contextId: 'd-rivera-w2', contextLabel: 'W-2 - Acme Corporation',
   status: 'resolved', ownerRole: 'firm', ownerUserId: 'u-dana', request: null,
   messages: [
     { authorId: 'u-dana', role: 'preparer', ts: '2026-07-18T10:00', internal: false, body: 'Your W-2 came through clean and matches what we expected. Nothing needed from you here.' },
@@ -402,7 +402,7 @@ threads.push({
   status: 'waiting-client', ownerRole: 'client', ownerUserId: 'u-alex',
   request: { what: '1099-INT from your bank', due: daysFromNow(3), fulfilled: false },
   messages: [
-    { authorId: 'u-jordan', role: 'seasonal', ts: '2026-07-23T16:40', internal: false, body: 'Welcome, Alex! We noticed bank interest on your prior return — could you upload this year’s 1099-INT when you get a chance?' },
+    { authorId: 'u-jordan', role: 'seasonal', ts: '2026-07-23T16:40', internal: false, body: 'Welcome, Alex! We noticed bank interest on your prior return - could you upload this year’s 1099-INT when you get a chance?' },
   ],
 })
 
@@ -413,20 +413,20 @@ threads.push({
 // ============================================================================
 export const notes = [
   { id: 'n-1', returnId: 'r-rivera', authorId: 'u-dana', role: 'preparer', ts: '2026-07-21 09:12', visibility: 'all', done: false,
-    body: 'Jordan — once you send the brokerage cost-basis statement I can close out the capital gain line and we’re done.',
+    body: 'Jordan - once you send the brokerage cost-basis statement I can close out the capital gain line and we’re done.',
     anchor: { kind: 'field', id: 'f-7', label: 'Line 7 · Capital gain' } },
   { id: 'n-2', returnId: 'r-rivera', authorId: 'u-rivera', role: 'individual', ts: '2026-07-21 19:40', visibility: 'all', done: false,
     body: 'Heads up: I switched brokers in March, so there may be two statements for the year.' },
   { id: 'n-3', returnId: 'r-rivera', authorId: 'u-dana', role: 'preparer', ts: '2026-07-22 08:05', visibility: 'firm', done: false,
-    body: 'Sam — the 1099-DIV qualified/ordinary split is ambiguous. I’ve left it flagged rather than guessing; want your read before we file.',
+    body: 'Sam - the 1099-DIV qualified/ordinary split is ambiguous. I’ve left it flagged rather than guessing; want your read before we file.',
     anchor: { kind: 'field', id: 'f-3a', label: 'Line 3a · Qualified dividends' } },
   { id: 'n-4', returnId: 'r-rivera', authorId: 'u-sam', role: 'reviewer', ts: '2026-07-22 11:30', visibility: 'firm', done: true,
-    body: 'Agreed. Prior-year treatment used the ordinary figure — match that unless the broker restates.' },
+    body: 'Agreed. Prior-year treatment used the ordinary figure - match that unless the broker restates.' },
   { id: 'n-5', returnId: 'r-rivera', authorId: 'u-dana', role: 'preparer', ts: '2026-07-23 14:22', visibility: 'all', done: false,
-    body: 'Refund estimate will move a little once the basis question is settled — nothing to worry about.',
+    body: 'Refund estimate will move a little once the basis question is settled - nothing to worry about.',
     anchor: { kind: 'document', id: 'd-rivera-b', label: '1099-B · Fidelity' } },
   { id: 'n-6', returnId: 'r-chen', authorId: 'u-jordan', role: 'seasonal', ts: '2026-07-23 16:45', visibility: 'all', done: false,
-    body: 'Welcome aboard, Alex. Upload whatever you have and we’ll tell you what’s still missing — no need to get it perfect first time.' },
+    body: 'Welcome aboard, Alex. Upload whatever you have and we’ll tell you what’s still missing - no need to get it perfect first time.' },
 ]
 
 // ============================================================================
@@ -436,7 +436,7 @@ export const notes = [
 // ============================================================================
 export const activitySeed = [
   { id: 'a-1', kind: 'message', audience: 'firm', title: 'Jordan Rivera replied', sub: 'Cost basis on the Fidelity sale', at: '2h ago', to: '/returns/r-rivera?tab=messages&thread=th-basis' },
-  { id: 'a-2', kind: 'flag', audience: 'firm', title: 'Verity AI flagged a line', sub: 'Rivera 1040 · Line 3a dividends are ambiguous', at: '4h ago', to: '/returns/r-rivera?tab=review&field=f-3a' },
+  { id: 'a-2', kind: 'flag', audience: 'firm', title: 'Vantage AI flagged a line', sub: 'Rivera 1040 · Line 3a dividends are ambiguous', at: '4h ago', to: '/returns/r-rivera?tab=review&field=f-3a' },
   { id: 'a-3', kind: 'doc', audience: 'firm', title: 'Document received', sub: 'Alex Chen uploaded a W-2', at: 'Yesterday', to: '/returns/r-chen?tab=documents' },
   { id: 'a-4', kind: 'approval', audience: 'firm', title: 'Ready for review', sub: 'Torres Design Co. 1120-S moved to review', at: 'Yesterday', to: '/returns/r-torres?tab=status' },
   { id: 'a-5', kind: 'note', audience: 'firm', title: 'Sam Okafor left a note', sub: 'Rivera 1040 · dividend treatment', at: '2d ago', to: '/returns/r-rivera?tab=notes' },

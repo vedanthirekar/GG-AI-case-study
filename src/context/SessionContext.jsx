@@ -3,7 +3,7 @@
 // connected workflow (Challenge 04).
 //
 // Auth is deliberately fake: the email must match a seeded account, and any
-// non-empty password is accepted. What's real is the *consequence* of identity —
+// non-empty password is accepted. What's real is the *consequence* of identity -
 // roles resolve through AccessContext, so an administrator's grants change what
 // this person can actually see and do. Purely in-memory.
 import { createContext, useContext, useMemo, useState, useCallback } from 'react'
@@ -18,6 +18,10 @@ export function SessionProvider({ children }) {
   const [userId, setUserId] = useState(null)
   const [activeRole, setActiveRole] = useState(null)
   const [history, setHistory] = useState([]) // [{label, to}]
+  // Counts sign-ins. The shell keys itself on this so every session starts on a
+  // clean mount at its own front page, rather than inheriting the screen - and
+  // the URL - the previous session left behind.
+  const [sessionKey, setSessionKey] = useState(0)
 
   const user = userId ? userById(userId) : null
   const roles = userId ? rolesFor(userId) : []
@@ -33,6 +37,7 @@ export function SessionProvider({ children }) {
     const granted = rolesFor(id)
     setActiveRole(granted.includes(u.primary) ? u.primary : granted[0])
     setHistory([])
+    setSessionKey((k) => k + 1)
     return true
   }, [rolesFor])
 
@@ -47,28 +52,35 @@ export function SessionProvider({ children }) {
 
   const signOut = useCallback(() => { setUserId(null); setActiveRole(null); setHistory([]) }, [])
 
-  // Fast path used by the account menu and the guided tour — skips the form.
-  const switchUser = useCallback((id) => { enter(id) }, [enter])
-
+  // Note: there is deliberately no `switchUser`. Becoming a different person
+  // mid-session was a demo affordance; changing identity now goes through the
+  // sign-in screen, as it would in a real product.
   const switchRole = useCallback((role) => setActiveRole(role), [])
 
   const recordVisit = useCallback((label, to) => {
     setHistory((h) => {
-      if (h.length && h[h.length - 1].to === to) return h
+      const last = h[h.length - 1]
+      if (last && last.to === to) {
+        // The route changes before the new screen publishes its breadcrumb, so
+        // the first record for a path arrives carrying the *previous* screen's
+        // label. Correct it when the real one lands - bailing out here is what
+        // made "Back to..." name the wrong screen.
+        return last.label === label ? h : [...h.slice(0, -1), { label, to }]
+      }
       return [...h.filter((x) => x.to !== to), { label, to }].slice(-6)
     })
   }, [])
 
   const value = useMemo(() => ({
-    user, userId, roles,
+    user, userId, roles, sessionKey,
     signedIn: !!userId,
     activeRole: effectiveRole,
     caps: capsFor(effectiveRole),
     nav: navFor(effectiveRole),
     isFirm: isFirmRole(effectiveRole),
-    signIn, signOut, switchUser, switchRole,
+    signIn, signOut, switchRole,
     history, recordVisit,
-  }), [user, userId, roles, effectiveRole, signIn, signOut, switchUser, switchRole, history, recordVisit])
+  }), [user, userId, roles, sessionKey, effectiveRole, signIn, signOut, switchRole, history, recordVisit])
 
   return <SessionCtx.Provider value={value}>{children}</SessionCtx.Provider>
 }
