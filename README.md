@@ -8,7 +8,6 @@ Once signed in, the functionality and UI vary according to the user's role. When
 
 For navigation help, or if the user gets stuck or confused, there is an AI assistant to turn to. There are also guides and FAQs on the website for each page and workflow.
 
----
 
 ## What's wired up vs. simulated
 
@@ -44,42 +43,28 @@ For navigation help, or if the user gets stuck or confused, there is an AI assis
   feed, just nothing server-pushed).
 - **Persistence** - none; a refresh resets everything.
 
----
+
 
 ## Decisions worth explaining
 
-- **One product, not ten demos.** Every capability lives in one shell on shared
-  primitives - traceability, affordances, status and AI trust all reuse the same
-  components, which is the real test of whether the system holds together.
-- **Identity is the entry point**, not a role-switcher dropdown. You sign in as someone,
-  and the whole surface resolves from who that is - closer to how a real product works,
-  even though it costs the evaluator one extra click via the demo picker.
-- **Permissions are communicated, not hidden - within the screen you're already on.** A
-  control you can't use stays visible with a tooltip naming who has it, so two colleagues
-  share one mental model. The line is drawn at whole *sections*: a permanently locked nav
-  destination (People & access) is clutter, not communication, so it's hidden instead -
-  the route guard, not the missing link, is what actually enforces it.
-- **One status vocabulary, two audiences.** Rather than separate client/staff status
-  systems (the usual cause of people reading "done" differently), there's one ordered
-  stage list with audience-appropriate labels and depth.
-- **Trust through layered disclosure.** The AI card leads with a plain summary and
-  confidence; evidence is one tap away, not dumped all at once. Where a figure is
-  genuinely ambiguous, it offers a choice between readings instead of guessing.
-- **The assistant reads; it never writes.** It can explain and navigate (links checked
-  against the real route table), but it can't verify a field, correct a figure or send a
-  message. A product whose whole claim is "every number traces to a person's decision"
-  can't let a model quietly make one of those decisions.
-- **An assistant didn't replace the documentation.** The guides are the assistant's
-  grounding corpus, so deleting them would make it worse - and a help centre answers *the*
-  question (browsable, works offline) while the assistant answers *your* question. They're
-  wired together instead: the assistant cites the guide it drew on.
-- **The visual language is an argument, not a default.** A tax return is a printed
-  instrument, so the interface is built like one - serif headings, tabular mono for every
-  figure, hairline rules instead of shadows, near-square corners, and a deliberately
-  scarce palette. This direction ("Ledger") was picked over five alternatives, still
-  browsable at `mockups/v2/index.html`. There is no dark mode, for the same reason a
-  printed instrument has one stock, not two.
-
-Everything visual resolves from the token block in `src/index.css` plus the scales in
-`tailwind.config.js` - re-theming the product means editing those two files, not the
-feature code.
+- **One app for every role, not six separate ones.** All roles share the same
+  components and the same data. Only what's visible and what's allowed changes,
+  based on the signed-in role.
+- **Role decides the whole experience after login**, instead of a manual switcher.
+  Navigation, wording and permissions all come from who signed in.
+- **Locked actions stay visible with a reason**, but only on screens the user can
+  already reach. Whole sections meant for a different role, like admin tools, are
+  hidden completely instead of shown locked.
+- **One status system, shown two ways.** Client and staff see the same underlying
+  status, just worded and detailed differently for each audience, instead of two
+  systems that could fall out of sync.
+- **The AI assistant only reads and explains, it never edits.** It can answer
+  questions and link to pages, but it can't change a number or send a message on
+  someone's behalf.
+- **The AI on the review screen shows a short summary first**, with evidence
+  available on tap instead of dumped all at once. If it isn't confident, it asks
+  the user to choose instead of guessing.
+- **The visual style is built to look like an actual tax document** - serif
+  headings, monospace numbers, minimal color, hairline rules instead of shadows,
+  and no dark mode. Every color and spacing value comes from one token file
+  (`src/index.css`), so the whole look can be changed from one place.
