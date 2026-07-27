@@ -8,12 +8,11 @@ Once signed in, the functionality and UI vary according to the user's role. When
 
 For navigation help, or if the user gets stuck or confused, there is an AI assistant to turn to. There are also guides and FAQs on the website for each page and workflow.
 
-
 ## What's wired up vs. simulated
 
 **Genuinely wired up**
 
-- **Ask Vantage.** An AI assistant, the user could go to whenever he has question
+- **Ask Vantage.** An AI assistant, the user could go to whenever he has a question
   regarding the app, his return, or what to do next. It also has context about the user's
   role, the codebase, the website, whats going on, next processes on top of the tax
   filing process.
@@ -24,25 +23,23 @@ For navigation help, or if the user gets stuck or confused, there is an AI assis
 - **Navigation and search.** Things like breadcrumbs, related items, search, and the
   guided tour all work off real data and permissions.
 
-
 **Simulated**
 
-- **Authentication** - email must match a seeded account, any password passes. No
+- **Authentication.** Email must match a seeded account, any password passes. No
   session, no token, no server; signing out just clears React state.
-- **AI extraction** - confidence scores, evidence and candidate
-  interpretations on the review screen are a stable-contract stub, not a model call. (Ask Vantage is the one exception, its a genuine call to an LLM API)
-- **The data** - a deterministic seeded generator plus a few hand-authored records.
-- **Notifications** seed from mock data (live actions do push real new items onto the
-  feed, just nothing pushed to backend).
-
-
+- **AI extraction.** Confidence scores, evidence and candidate interpretations on the
+  review screen are a stable-contract stub, not a model call. (Ask Vantage is the one
+  exception, its a genuine call to an LLM API.)
+- **The data.** A deterministic seeded generator plus a few hand-authored records.
+- **Notifications.** These seed from mock data (live actions do push real new items onto
+  the feed, just nothing pushed to a backend).
 
 ## Decisions
 
-- **Role decides the whole experience after login.** Navigation, wording and permissions all are variable depeding on the role of the signed in user.
+- **Role decides the whole experience after login.** Navigation, wording and permissions
+  all vary depending on the role of the signed-in user.
 - **The AI assistant only reads and explains, it never edits.** It can answer
   questions and link to pages, but it can't change a number or send a message on
   someone's behalf.
-- **One app for every.** All roles share the same
-  components and the same data. But each role has its own level of access to the information. 
-
+- **One app for every role.** All roles share the same components and the same data.
+  But each role has its own level of access to the information.
