@@ -6,7 +6,9 @@ one data model, one sign-in - that answers all ten challenges as real parts of t
 application rather than ten disconnected demos.
 
 > The frontend is the point. Everything behind it is deliberately "quick and dirty":
-> generated data, a simulated AI, no backend, no real auth, no real parsing.
+> generated data, a simulated AI, no real auth, no real parsing. The single exception is
+> **Ask Vantage**, which calls a real model through a serverless function - the only
+> server in the project, and it exists to keep an API key out of the browser.
 
 ---
 
@@ -17,9 +19,6 @@ npm install
 npm run dev        # http://localhost:5173
 ```
 
-`npm run build` produces a static bundle in `dist/` - deploy anywhere (Vercel, Netlify,
-any static host). No backend, no services.
-
 ### Optional: the AI assistant
 
 One feature calls a real model - **Ask Vantage**, the assistant in the help drawer. To
@@ -27,7 +26,7 @@ enable it, copy `.env.example` to `.env.local` and paste a free
 [Google AI Studio](https://aistudio.google.com/apikey) key:
 
 ```
-VITE_GEMINI_API_KEY=your-key-here
+GEMINI_API_KEY=your-key-here
 ```
 
 Restart the dev server afterwards - Vite doesn't hot-reload env changes.
@@ -35,11 +34,36 @@ Restart the dev server afterwards - Vite doesn't hot-reload env changes.
 **Without a key the app still works.** Ask Vantage falls back to a deterministic answerer
 over the help-centre content and labels every answer as such, so nothing appears broken.
 
-> ⚠️ Vite inlines any `VITE_`-prefixed variable into the client bundle, so this key **is
-> readable in DevTools on a deployed build**. That's an accepted trade-off for a prototype
-> with no backend: use a free-tier key and rotate it afterwards. `.env.local` is gitignored
-> (`*.local`) so it can't be committed by accident. A production build of this would put the
-> call behind a serverless function instead.
+Note the variable has **no `VITE_` prefix**, and must not gain one. Vite inlines every
+`VITE_`-prefixed variable into the client bundle, where anyone can read it in DevTools.
+The key is read instead by `api/gemini.js`, a serverless function that proxies the call, so
+it stays server-side and never reaches the browser. `npm run dev` mounts that same handler
+as Vite middleware (see `vite.config.js`), so local and deployed behaviour are identical
+and there is only one implementation to keep correct.
+
+### Deploying
+
+Everything except the assistant is static, so the build is one command and the only
+runtime dependency is that one function.
+
+```bash
+npm i -g vercel
+vercel            # first run links the project
+vercel --prod
+```
+
+Then set `GEMINI_API_KEY` in the Vercel project's environment variables and redeploy. Two
+pieces of configuration matter:
+
+- **`vercel.json`** rewrites every non-`/api` path to `index.html`. The app uses
+  `BrowserRouter`, so `/dashboard` and `/returns/r-rivera` have no file behind them -
+  without the rewrite, refreshing any page except `/` returns 404.
+- **`api/gemini.js`** runs on the Edge runtime because the response is a stream; the SSE
+  body from Google is piped straight through so answers still type out token by token.
+
+The endpoint is unauthenticated - it protects the key, not the quota - so it caps system
+size, turn count and turn length. Real protection is a signed session, which this
+prototype deliberately doesn't have.
 
 **Stack:** React 18 · Vite · Tailwind · react-router · framer-motion.
 State is in-memory: **a page refresh signs you out and resets every edit.** That's a
@@ -159,8 +183,10 @@ Also: **⌘K** searches everything, and **?** opens help for the screen you're o
 - **The status state machine**, breadcrumbs, deep links, and the affordance system.
 - **The tour engine** - one pool of steps filtered by role and by live conditions, driving
   real navigation and spotlighting against the signed-in user's own records.
-- **Ask Vantage** (`src/lib/assistant.js`, `src/lib/gemini.js`) - **the one place a real model
-  is called.** Its system brief is *compiled* from the app's own sources (`help.js`,
+- **Ask Vantage** (`src/lib/assistant.js`, `src/lib/gemini.js`, `api/gemini.js`) - **the one
+  place a real model is called**, and the one real server in the project: a serverless
+  function holds the API key so it never ships to the browser.
+  Its system brief is *compiled* from the app's own sources (`help.js`,
   `catalog.js`, `roles.js`) rather than restated, so it can't drift from what the product
   does; its live context is assembled from `SessionContext` + `StoreContext`, so it quotes
   current figures rather than seed data. Permission is enforced at assembly - firm-only

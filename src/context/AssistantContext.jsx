@@ -14,7 +14,7 @@ import { useLocation } from 'react-router-dom'
 import { useSession } from './SessionContext'
 import { useStore } from './StoreContext'
 import { useChrome } from './ChromeContext'
-import { streamAnswer, hasApiKey, explainError, GeminiError } from '../lib/gemini'
+import { streamAnswer, assistantStatus, explainError, GeminiError } from '../lib/gemini'
 import { buildSystemBrief, buildLiveContext, parseAnswer, starterPrompts } from '../lib/assistant'
 import { fallbackAnswer } from '../lib/assistantFallback'
 
@@ -34,6 +34,17 @@ export function AssistantProvider({ children }) {
   const [openRequest, setOpenRequest] = useState(null) // { tab, prefill, n } - consumed by AppShell
   const abortRef = useRef(null)
   const seq = useRef(0)
+
+  // Whether a real model is answering, and which one. The key lives on the
+  // server now, so this is asked rather than read from the bundle. Optimistic
+  // until the probe lands: a slow answer here must not make the UI claim the
+  // assistant is offline when it isn't.
+  const [status, setStatus] = useState({ live: true, model: '' })
+  useEffect(() => {
+    let alive = true
+    assistantStatus().then((s) => { if (alive) setStatus(s) })
+    return () => { alive = false }
+  }, [])
 
   // A conversation is bound to a person. Switching account must not carry one
   // user's return into another user's context window.
@@ -95,7 +106,9 @@ export function AssistantProvider({ children }) {
       })
     }
 
-    if (!hasApiKey()) { degrade('no-key'); setStreaming(false); return }
+    // A shortcut, not the guard: the function returns a typed 'no-key' anyway,
+    // so correctness doesn't depend on the probe having landed.
+    if (!status.live) { degrade('no-key'); setStreaming(false); return }
 
     const controller = new AbortController()
     abortRef.current = controller
@@ -143,7 +156,7 @@ ${buildLiveContext({ session, store, location, crumbs })}`
       abortRef.current = null
       setStreaming(false)
     }
-  }, [messages, streaming, session, store, location, crumbs])
+  }, [messages, streaming, status.live, session, store, location, crumbs])
 
   const suggestions = useMemo(
     () => starterPrompts({ session, location }),
@@ -152,8 +165,8 @@ ${buildLiveContext({ session, store, location, crumbs })}`
   const value = useMemo(() => ({
     messages, streaming, ask, stop, reset,
     openAsk, openRequest, consumeOpenRequest,
-    suggestions, live: hasApiKey(),
-  }), [messages, streaming, ask, stop, reset, openAsk, openRequest, consumeOpenRequest, suggestions])
+    suggestions, live: status.live, model: status.model,
+  }), [messages, streaming, ask, stop, reset, openAsk, openRequest, consumeOpenRequest, suggestions, status])
 
   return <AssistantCtx.Provider value={value}>{children}</AssistantCtx.Provider>
 }

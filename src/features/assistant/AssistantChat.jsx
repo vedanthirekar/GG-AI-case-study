@@ -15,11 +15,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAssistant } from '../../context/AssistantContext'
-import { modelName } from '../../lib/gemini'
 import { Icon, Btn, Kbd, cx } from '../../components/ui'
 
 export default function AssistantChat({ prefill, onNavigate }) {
-  const { messages, streaming, ask, stop, reset, suggestions, live } = useAssistant()
+  const { messages, streaming, ask, stop, reset, suggestions, live, model } = useAssistant()
   const [draft, setDraft] = useState('')
   const scroller = useRef(null)
   const input = useRef(null)
@@ -122,8 +121,8 @@ function Empty({ live, suggestions, onPick }) {
       <div className="mt-4 flex items-start gap-1.5 border-t border-line2 pt-3 text-[10.5px] leading-snug text-faint">
         <Icon name={live ? 'bolt' : 'alert'} size={12} className="mt-px shrink-0" />
         {live
-          ? <span>Answers come from a live <span className="font-mono">{modelName()}</span> call - the one thing in this prototype that isn’t simulated. It reads your session, never writes to it.</span>
-          : <span>No API key is configured, so answers come from the help centre rather than a model. Add <span className="font-mono">VITE_GEMINI_API_KEY</span> to <span className="font-mono">.env.local</span> to enable it.</span>}
+          ? <span>Answers come from a live {model ? <span className="font-mono">{model}</span> : 'Gemini'} call - the one thing in this prototype that isn’t simulated. The key stays on the server; this reads your session and never writes to it.</span>
+          : <span>No API key is configured on this deployment, so answers come from the help centre rather than a model. Set <span className="font-mono">GEMINI_API_KEY</span> on the server to enable it.</span>}
       </div>
     </div>
   )

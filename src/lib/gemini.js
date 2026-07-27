@@ -1,32 +1,20 @@
 // ============================================================================
-// A minimal Gemini client - the one place in this prototype that talks to a
-// real model. Everything else labelled "AI" (src/data/ai.js) is a stub with a
-// stable contract; this is not.
+// The client half of the one real model call in this prototype. Everything else
+// labelled "AI" (src/data/ai.js) is a stub with a stable contract; this is not.
+//
+// This no longer talks to Google. It posts to `/api/gemini`, a serverless
+// function that holds the key (see api/gemini.js). Nothing secret is inlined
+// into the bundle, which is what makes this safe to deploy publicly. What stays
+// here is the SSE parsing and the typed errors, so the UI can still say
+// something specific rather than shrugging.
 //
 // Deliberately dependency-free: `fetch` plus a small SSE parser, in keeping
-// with the rest of the project. The official SDK would add ~200kB to a bundle
-// that needs one endpoint.
-//
-// The key comes from VITE_GEMINI_API_KEY in .env.local. Vite inlines that at
-// build time, so it IS readable in the shipped bundle - an accepted trade-off
-// for a prototype with no backend, documented in the README. When the key is
-// absent this module reports `no-key` and the caller falls back to the
-// deterministic help-centre answerer, so the feature degrades instead of
-// breaking.
+// with the rest of the project.
 // ============================================================================
 
-const KEY = import.meta.env.VITE_GEMINI_API_KEY || ''
-// Pinned, not `gemini-flash-latest`: the alias moves, and when it moved to a
-// Gemini 3 model it started rejecting `thinkingBudget` with a 400. A named
-// version is the one that keeps working. Note that appearing in ListModels is
-// not the same as being callable - 2.5-flash is still listed but 404s for keys
-// issued after its deprecation.
-const MODEL = import.meta.env.VITE_GEMINI_MODEL || 'gemini-3.5-flash'
-const ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models'
+const API = '/api/gemini'
 const TIMEOUT_MS = 30000
-
-export const hasApiKey = () => Boolean(KEY)
-export const modelName = () => MODEL
+const DEFAULT_MODEL = 'gemini-3.5-flash'
 
 // Typed failures, so the UI can say something specific rather than shrugging.
 export class GeminiError extends Error {
@@ -38,14 +26,33 @@ export class GeminiError extends Error {
 }
 
 const MESSAGES = {
-  'no-key': 'No API key is configured, so I answered from the help centre instead.',
+  'no-key': 'The assistant isn’t configured on this deployment, so I answered from the help centre instead.',
   'rate-limited': 'The free-tier rate limit is exhausted for the moment. Here’s the help-centre answer instead.',
-  auth: 'That API key was rejected. Here’s the help-centre answer instead.',
-  model: `The model “${MODEL}” isn’t available on this key. Set VITE_GEMINI_MODEL to one that is. Here’s the help-centre answer instead.`,
+  auth: 'The server’s API key was rejected. Here’s the help-centre answer instead.',
+  model: 'The configured model isn’t available. Here’s the help-centre answer instead.',
   blocked: 'I couldn’t answer that one. Try rephrasing, or ask your preparer in Messages.',
   network: 'I couldn’t reach the model. Here’s the help-centre answer instead.',
 }
 export const explainError = (kind) => MESSAGES[kind] || MESSAGES.network
+
+/**
+ * Ask the server whether the assistant is live, and which model is answering.
+ *
+ * The browser can no longer see the key, so this is the only way to know. The
+ * promise is cached: it's one answer per page load, not per question. A failed
+ * probe reports optimistically - the POST itself returns a typed error, so a
+ * probe that couldn't complete must not be what silences the assistant.
+ *
+ * @returns {Promise<{live: boolean, model: string}>}
+ */
+let probe = null
+export function assistantStatus() {
+  probe ||= fetch(API, { method: 'GET' })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((d) => ({ live: d?.live ?? true, model: d?.model || DEFAULT_MODEL }))
+    .catch(() => ({ live: true, model: DEFAULT_MODEL }))
+  return probe
+}
 
 /**
  * Stream an answer, yielding text deltas as they arrive.
@@ -58,8 +65,6 @@ export const explainError = (kind) => MESSAGES[kind] || MESSAGES.network
  * @returns {Promise<string>} the full text
  */
 export async function streamAnswer({ system, history, signal, onDelta }) {
-  if (!KEY) throw new GeminiError('no-key', MESSAGES['no-key'])
-
   // Our own deadline on top of the caller's abort: a stream that stalls
   // mid-response would otherwise leave the composer disabled forever.
   const timer = new AbortController()
@@ -69,23 +74,13 @@ export async function streamAnswer({ system, history, signal, onDelta }) {
 
   let res
   try {
-    res = await fetch(`${ENDPOINT}/${MODEL}:streamGenerateContent?alt=sse&key=${encodeURIComponent(KEY)}`, {
+    res = await fetch(API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       signal: timer.signal,
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: system }] },
-        contents: history.map((m) => ({ role: m.role, parts: [{ text: m.text }] })),
-        generationConfig: {
-          temperature: 0.3,          // help answers should be repeatable, not creative
-          maxOutputTokens: 900,
-          // 2.5-flash reasons before answering by default. For a help chat that
-          // buys nothing and costs several seconds before the first token.
-          thinkingConfig: { thinkingBudget: 0 },
-        },
-      }),
+      body: JSON.stringify({ system, history }),
     })
-  } catch (e) {
+  } catch {
     clearTimeout(deadline)
     signal?.removeEventListener('abort', onOuterAbort)
     if (signal?.aborted) throw new GeminiError('aborted', 'Stopped.')
@@ -94,12 +89,11 @@ export async function streamAnswer({ system, history, signal, onDelta }) {
 
   try {
     if (!res.ok) {
-      const kind = res.status === 429 ? 'rate-limited'
-        : res.status === 404 ? 'model'
-        : res.status === 401 || res.status === 403 ? 'auth'
-        : res.status === 400 ? 'model' // usually a generationConfig the model rejects
-        : 'network'
-      throw new GeminiError(kind, MESSAGES[kind])
+      // The function classifies the upstream failure for us; fall back to the
+      // status only if it returned something unexpected.
+      let kind = 'network'
+      try { kind = (await res.json())?.kind || 'network' } catch { /* not JSON */ }
+      throw new GeminiError(kind, MESSAGES[kind] || MESSAGES.network)
     }
 
     let full = ''

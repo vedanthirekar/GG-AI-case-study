@@ -61,7 +61,7 @@ export default function LoginPage({ intended }) {
           </h1>
           <p className="mt-4 text-[22px] leading-relaxed text-inverse-fg/65">
             {/* Individual and Business Returns.  */}
-            <p className="mt-4 text-[18px] leading-relaxed text-inverse-fg/65">
+            <p className="mt-4 text-[17px] leading-relaxed text-inverse-fg/65">
             ·  Document intake  ·  Preparation  ·  Review  ·  Filing
             </p>
           </p>
