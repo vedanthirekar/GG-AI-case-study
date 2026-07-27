@@ -2,49 +2,47 @@
 
 ## User flow, experience & navigation
 
-The current landing page is the login page, which mainly aims as showing the feel of how the login would look like. I have created mock profiles for user to login with. more details about each profile are shown in the demo section itself.
+The current landing page is the login page, which mainly aims to show the feel of how the login would look. I have created mock profiles for users to log in with - more details about each profile are shown in the demo section itself.
 
-Once signed in, the Functionality and UI varies according to the roles. When logging in for the first time to any role, the site offers a short tour or the user can take the tour anytime if needed.
+Once signed in, the functionality and UI vary according to the user's role. When logging in for the first time to any role, the site offers a short tour, which the user can also take anytime later if needed.
 
-For navigability, being stuck or confused, there is mainly AI assitant to get help from. There are also guides and faqs in the website for each page, workflow.
+For navigation help, or if the user gets stuck or confused, there is an AI assistant to turn to. There are also guides and FAQs on the website for each page and workflow.
 
 ---
 
 ## What's wired up vs. simulated
 
-**Genuinely wired up - real code doing real work:**
+**Genuinely wired up**
 
 - **Ask Vantage.** An AI assistant, the user could go to whenever he has question
   regarding the app, his return, or what to do next. It also has context about the user's
   role, the codebase, the website, whats going on, next processes on top of the tax
   filing process.
-- **Live store and recompute engine.** Whenever the user edits, verifies, or corrects a
-  number, it updates the central store right away. Every other number connected to it,
-  like the refund, updates too, using a real tax calculation.
 - **Role-based access control.** When an admin changes someone's role, it actually
   changes what that person can see and do on the site, not just a label.
 - **Prioritization engine.** All the tasks are ranked by due date, how urgent or blocked
   they are, and their stage. The dashboard just shows this live ranking, not a fixed list.
 - **Navigation and search.** Things like breadcrumbs, related items, search, and the
-  guided tour all work off real data and permissions, not something hardcoded per page.
+  guided tour all work off real data and permissions.
+- **Live store and recompute engine.** Whenever the user edits, verifies, or corrects a
+  number, it updates the central store right away. Every other number connected to it,
+  like the refund, updates too, using a real tax calculation.
 
 
-**Simulated - fabricated but plausible, by design:**
+
+**Simulated**
 
 - **Authentication** - email must match a seeded account, any password passes. No
   session, no token, no server; signing out just clears React state.
 - **AI extraction** (`data/ai.js`) - confidence scores, evidence and candidate
-  interpretations on the review screen are a stable-contract stub, not a model call. The
-  case study is about how AI output is presented and trusted, so that surface is
-  deliberately faked while the trust design around it is real. (Ask Vantage is the one
-  exception - that's a genuine call.)
+  interpretations on the review screen are a stable-contract stub, not a model call. (Ask Vantage is the one exception, its a genuine call to an LLM API)
 - **Document parsing/OCR** - documents are hardcoded objects with "boxes"; the
   highlighted region is a lookup, not extraction.
 - **The data** (`data/db.js`) - a deterministic seeded generator (~64 returns, ~340
   documents, ~113 tasks) plus a few hand-authored hero records for depth.
 - **Notifications** seed from mock data (live actions do push real new items onto the
-  feed, just nothing server-pushed). **Loading states** are a deliberate ~260ms skeleton
-  with no backend behind them. **Persistence** - none; a refresh resets everything.
+  feed, just nothing server-pushed).
+- **Persistence** - none; a refresh resets everything.
 
 ---
 
