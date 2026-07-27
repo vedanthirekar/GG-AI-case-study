@@ -52,7 +52,7 @@ export default function AssistantChat({ prefill, onNavigate }) {
     <div className="flex min-h-0 flex-1 flex-col">
       <div ref={scroller} className="pane min-h-0 flex-1 overflow-y-auto px-4 py-4">
         {messages.length === 0
-          ? <Empty live={live} suggestions={suggestions} onPick={send} />
+          ? <Empty live={live} model={model} suggestions={suggestions} onPick={send} />
           : (
             <div className="space-y-4">
               {messages.map((m, i) => (
@@ -90,7 +90,7 @@ export default function AssistantChat({ prefill, onNavigate }) {
 
 // ---------------------------------------------------------------------------
 
-function Empty({ live, suggestions, onPick }) {
+function Empty({ live, model, suggestions, onPick }) {
   return (
     <div>
       <div className="flex items-center gap-2">
