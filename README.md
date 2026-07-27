@@ -1,4 +1,4 @@
-# Vantage - an AI-powered tax platform (case-study prototype)
+# Vantage - an AI-powered tax platform prototype
 
 ## User flow, experience & navigation
 
@@ -31,10 +31,9 @@ For navigation help, or if the user gets stuck or confused, there is an AI assis
   session, no token, no server; signing out just clears React state.
 - **AI extraction** - confidence scores, evidence and candidate
   interpretations on the review screen are a stable-contract stub, not a model call. (Ask Vantage is the one exception, its a genuine call to an LLM API)
-- **The data** - a deterministic seeded generator (~64 returns, ~340
-  documents, ~113 tasks) plus a few hand-authored hero records for depth.
+- **The data** - a deterministic seeded generator plus a few hand-authored records.
 - **Notifications** seed from mock data (live actions do push real new items onto the
-  feed, just nothing server-pushed).
+  feed, just nothing pushed to backend).
 
 
 
