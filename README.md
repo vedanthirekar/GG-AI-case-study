@@ -43,17 +43,15 @@ and there is only one implementation to keep correct.
 
 ### Deploying
 
-Everything except the assistant is static, so the build is one command and the only
-runtime dependency is that one function.
+The project is connected to this GitHub repo (via `vercel git connect`), so **a push to
+`master` builds and deploys to production automatically** - no manual step. Every other
+branch and pull request gets its own preview URL instead. `vercel --prod` from the CLI
+still works if you need to deploy something that isn't pushed yet, but it's no longer the
+normal path; git is.
 
-```bash
-npm i -g vercel
-vercel            # first run links the project
-vercel --prod
-```
-
-Then set `GEMINI_API_KEY` in the Vercel project's environment variables and redeploy. Two
-pieces of configuration matter:
+Set `GEMINI_API_KEY` in the Vercel project's environment variables (Production scope is
+enough - it's not required for previews to build, they just fall back to the deterministic
+answerer same as running with no key locally). Two pieces of configuration matter:
 
 - **`vercel.json`** rewrites every non-`/api` path to `index.html`. The app uses
   `BrowserRouter`, so `/dashboard` and `/returns/r-rivera` have no file behind them -
