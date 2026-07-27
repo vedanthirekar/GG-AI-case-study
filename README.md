@@ -14,19 +14,19 @@ For navigability, being stuck or confused, there is mainly AI assitant to get he
 
 **Genuinely wired up - real code doing real work:**
 
-- **Ask Vantage.** A serverless function calls the real Gemini model, so the API key
-  never reaches the browser. Its knowledge is built from the app's own code, not
-  hand-written, so it can't drift from what the product actually does. It only ever sees
-  what the signed-in user is allowed to see.
-- **Live store and recompute engine.** Editing, verifying, or correcting a field updates
-  one central store. Every number that depends on it, including the refund, recalculates
-  from a real tax formula.
-- **Role-based access control.** An admin's permission changes are the real source of
-  truth. Changing someone's role actually changes what they can see and do.
-- **Prioritization engine.** A scoring function ranks every task by due date, blocking
-  status, and stage. The dashboard is a live view of that ranking, not a fixed list.
-- **Navigation and search.** Breadcrumbs, related-item links, search, and the guided
-  tour are all built on the app's real data and permissions, not hardcoded per screen.
+- **Ask Vantage.** An AI assistant, the user could go to whenever he has question
+  regarding the app, his return, or what to do next. It also has context about the user's
+  role, the codebase, the website, whats going on, next processes on top of the tax
+  filing process.
+- **Live store and recompute engine.** Whenever the user edits, verifies, or corrects a
+  number, it updates the central store right away. Every other number connected to it,
+  like the refund, updates too, using a real tax calculation.
+- **Role-based access control.** When an admin changes someone's role, it actually
+  changes what that person can see and do on the site, not just a label.
+- **Prioritization engine.** All the tasks are ranked by due date, how urgent or blocked
+  they are, and their stage. The dashboard just shows this live ranking, not a fixed list.
+- **Navigation and search.** Things like breadcrumbs, related items, search, and the
+  guided tour all work off real data and permissions, not something hardcoded per page.
 
 
 **Simulated - fabricated but plausible, by design:**
